@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ - P-Sieve{% endblock %}
+
+{% block content %}
+<div class="home-cyber-wrapper">
+    <section class="hero-section hero-cyber-card">
+        <div class="hero-logo-box">
+            <img src="/static/images/ptit_logo.png" alt="Logo PTIT" class="hero-ptit-logo">
+        </div>
+        <h1 class="hero-main-title">P-Sieve</h1>
+        <p class="hero-subtitle">Hệ thống tra cứu và phát hiện dấu hiệu lừa đảo trực tuyến</p>
+        <div class="hero-intro-card">
+            <p class="hero-intro-text">
+                P-Sieve là giải pháp an toàn số hỗ trợ sinh viên và người dân nhận diện nhanh chóng các nguy cơ lừa đảo qua tin nhắn, số điện thoại lạ, đường dẫn độc hại và hình ảnh giả mạo.
+            </p>
+        </div>
+        <div class="hero-action-buttons">
+            <a href="/scan" class="btn btn-primary btn-large">Kiểm tra</a>
+            <a href="/report" class="btn btn-secondary btn-large">Báo cáo</a>
+        </div>
+    </section>
+</div>
+{% endblock %}

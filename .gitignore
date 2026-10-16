@@ -1,0 +1,87 @@
+# ============================================================
+# .gitignore - Hệ thống Phát hiện Lừa đảo P-Sieve
+# ============================================================
+
+# ------ Bảo mật: TUYỆT ĐỐI không đẩy lên GitHub ------
+.env
+*.key
+*.pem
+*.p12
+secrets.json
+
+# Giữ lại file mẫu để người khác biết cần khai báo biến gì
+!.env.example
+
+# ------ Database (sinh ra khi chạy, không cần lưu) ------
+*.db
+*.sqlite
+*.sqlite3
+
+# ------ Model ML đã train (đưa lên repo để deploy được trên Render/Railway) ------
+# Nếu model quá lớn (>100MB) thì bỏ comment dòng dưới và dùng Git LFS
+# app/detector/ml_model.joblib
+# app/detector/phobert_head.joblib
+# app/detector/url_lgbm_model.joblib
+
+# ------ Python cache ------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ------ Virtual environment ------
+.venv/
+venv/
+env/
+ENV/
+
+# ------ Pytest cache ------
+.pytest_cache/
+.coverage
+htmlcov/
+*.coveragerc
+
+# ------ Build artifacts ------
+dist/
+build/
+*.egg-info/
+*.egg
+
+# ------ IDE / Editor ------
+.idea/
+*.swp
+*.swo
+*~
+
+# Giữ lại cấu hình VSCode cho nhóm
+# .vscode/   <-- để đẩy lên (hữu ích cho đồ án nhóm)
+
+# ------ OS ------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------ File nén / tạm ------
+*.zip
+*.tar.gz
+*.rar
+psieve-extension.zip
+
+# ------ Scratch / thử nghiệm ------
+scratch/
+
+# ------ Log ------
+*.log
+logs/
+
+# ------ Jupyter Notebook ------
+.ipynb_checkpoints/
+*.ipynb
+
+# ------ Dữ liệu lớn (nếu quá nặng thì bỏ comment dòng dưới) ------
+# data/
+
+# ------ mypy / type checking ------
+.mypy_cache/
+.dmypy.json
+

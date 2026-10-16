@@ -1,0 +1,315 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <!-- Background Vignette -->
+    <radialGradient id="centerAtmosphere" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+      <stop offset="35%" stop-color="#f8fafc" stop-opacity="0.85"/>
+      <stop offset="70%" stop-color="#f1f5f9" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.3"/>
+    </radialGradient>
+
+    <!-- Exquisite Cyan Bloom Filters & Gradients -->
+    <radialGradient id="cyanFlareMajor" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.7"/>
+      <stop offset="25%" stop-color="#0284c7" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="cyanFlareSoft" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#0284c7" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Exquisite Crimson/Ruby Bloom Filters & Gradients -->
+    <radialGradient id="rubyFlareMajor" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff2a55" stop-opacity="0.65"/>
+      <stop offset="25%" stop-color="#e11d48" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#f43f5e" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="rubyFlareSoft" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fb7185" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#e11d48" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Amethyst Transition Flare -->
+    <radialGradient id="purpleFlare" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.45"/>
+      <stop offset="60%" stop-color="#6366f1" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Base Clean Cyber Slate Canvas -->
+  <rect width="1920" height="1080" fill="#f8fafc"/>
+  <rect width="1920" height="1080" fill="url(#centerAtmosphere)"/>
+
+  <!-- ==================== WIDE HORIZON & PERSPECTIVE GRID LINES ==================== -->
+  
+  <!-- Floor Perspective Grid (Sải rộng chạm đáy màn hình) -->
+  <g stroke="#0284c7" stroke-opacity="0.16" stroke-width="1">
+    <line x1="960" y1="520" x2="-200" y2="1080" stroke-opacity="0.22"/>
+    <line x1="960" y1="520" x2="60" y2="1080" stroke-opacity="0.2"/>
+    <line x1="960" y1="520" x2="320" y2="1080" stroke-opacity="0.18"/>
+    <line x1="960" y1="520" x2="560" y2="1080" stroke-opacity="0.15"/>
+    <line x1="960" y1="520" x2="780" y2="1080" stroke-opacity="0.12"/>
+    <line x1="960" y1="520" x2="960" y2="1080" stroke-opacity="0.1"/>
+    <line x1="960" y1="520" x2="1140" y2="1080" stroke-opacity="0.12"/>
+    <line x1="960" y1="520" x2="1360" y2="1080" stroke-opacity="0.15"/>
+    <line x1="960" y1="520" x2="1600" y2="1080" stroke-opacity="0.18"/>
+    <line x1="960" y1="520" x2="1860" y2="1080" stroke-opacity="0.2"/>
+    <line x1="960" y1="520" x2="2120" y2="1080" stroke-opacity="0.22"/>
+
+    <!-- Depth Horizontal Lines Floor -->
+    <line x1="0" y1="1020" x2="1920" y2="1020" stroke-opacity="0.2"/>
+    <line x1="140" y1="940" x2="1780" y2="940" stroke-opacity="0.17"/>
+    <line x1="280" y1="860" x2="1640" y2="860" stroke-opacity="0.14"/>
+    <line x1="420" y1="780" x2="1500" y2="780" stroke-opacity="0.11"/>
+    <line x1="560" y1="700" x2="1360" y2="700" stroke-opacity="0.08"/>
+    <line x1="700" y1="620" x2="1220" y2="620" stroke-opacity="0.05"/>
+  </g>
+
+  <!-- Ceiling Perspective Grid (Sải rộng chạm đỉnh màn hình) -->
+  <g stroke="#94a3b8" stroke-opacity="0.14" stroke-width="0.8">
+    <line x1="960" y1="460" x2="-100" y2="0" stroke-opacity="0.18"/>
+    <line x1="960" y1="460" x2="200" y2="0" stroke-opacity="0.15"/>
+    <line x1="960" y1="460" x2="500" y2="0" stroke-opacity="0.12"/>
+    <line x1="960" y1="460" x2="800" y2="0" stroke-opacity="0.1"/>
+    <line x1="960" y1="460" x2="1120" y2="0" stroke-opacity="0.1"/>
+    <line x1="960" y1="460" x2="1420" y2="0" stroke-opacity="0.12"/>
+    <line x1="960" y1="460" x2="1720" y2="0" stroke-opacity="0.15"/>
+    <line x1="960" y1="460" x2="2020" y2="0" stroke-opacity="0.18"/>
+
+    <!-- Depth Horizontal Lines Ceiling -->
+    <line x1="0" y1="60" x2="1920" y2="60" stroke-opacity="0.16"/>
+    <line x1="160" y1="140" x2="1760" y2="140" stroke-opacity="0.13"/>
+    <line x1="320" y1="220" x2="1600" y2="220" stroke-opacity="0.1"/>
+    <line x1="480" y1="300" x2="1440" y2="300" stroke-opacity="0.07"/>
+    <line x1="640" y1="380" x2="1280" y2="380" stroke-opacity="0.04"/>
+  </g>
+
+  <!-- Left Cyber Wall Grid (Dải lưới rộng & sắc sảo) -->
+  <g stroke="#0284c7" stroke-opacity="0.22" stroke-width="1">
+    <line x1="0" y1="0" x2="540" y2="380" stroke-opacity="0.25"/>
+    <line x1="0" y1="110" x2="540" y2="405" stroke-opacity="0.22"/>
+    <line x1="0" y1="230" x2="540" y2="430" stroke-opacity="0.2"/>
+    <line x1="0" y1="360" x2="540" y2="460" stroke-opacity="0.24"/>
+    <line x1="0" y1="500" x2="540" y2="495" stroke-opacity="0.2"/>
+    <line x1="0" y1="640" x2="540" y2="530" stroke-opacity="0.22"/>
+    <line x1="0" y1="780" x2="540" y2="560" stroke-opacity="0.25"/>
+    <line x1="0" y1="920" x2="540" y2="595" stroke-opacity="0.22"/>
+    <line x1="0" y1="1080" x2="540" y2="630" stroke-opacity="0.26"/>
+
+    <!-- Left Vertical Struts -->
+    <line x1="50" y1="0" x2="50" y2="1080" stroke-opacity="0.14"/>
+    <line x1="120" y1="0" x2="120" y2="1080" stroke-opacity="0.18"/>
+    <line x1="210" y1="0" x2="210" y2="1080" stroke-opacity="0.22"/>
+    <line x1="310" y1="0" x2="310" y2="1080" stroke-opacity="0.18"/>
+    <line x1="420" y1="0" x2="420" y2="1080" stroke-opacity="0.14"/>
+    <line x1="520" y1="0" x2="520" y2="1080" stroke-opacity="0.08"/>
+  </g>
+
+  <!-- Right Cyber Wall Grid (Dải lưới rộng & sắc sảo) -->
+  <g stroke="#e11d48" stroke-opacity="0.2" stroke-width="1">
+    <line x1="1920" y1="0" x2="1380" y2="380" stroke-opacity="0.25"/>
+    <line x1="1920" y1="110" x2="1380" y2="405" stroke-opacity="0.22"/>
+    <line x1="1920" y1="230" x2="1380" y2="430" stroke-opacity="0.2"/>
+    <line x1="1920" y1="360" x2="1380" y2="460" stroke-opacity="0.24"/>
+    <line x1="1920" y1="500" x2="1380" y2="495" stroke-opacity="0.2"/>
+    <line x1="1920" y1="640" x2="1380" y2="530" stroke-opacity="0.22"/>
+    <line x1="1920" y1="780" x2="1380" y2="560" stroke-opacity="0.25"/>
+    <line x1="1920" y1="920" x2="1380" y2="595" stroke-opacity="0.22"/>
+    <line x1="1920" y1="1080" x2="1380" y2="630" stroke-opacity="0.26"/>
+
+    <!-- Right Vertical Struts -->
+    <line x1="1870" y1="0" x2="1870" y2="1080" stroke-opacity="0.14"/>
+    <line x1="1800" y1="0" x2="1800" y2="1080" stroke-opacity="0.18"/>
+    <line x1="1710" y1="0" x2="1710" y2="1080" stroke-opacity="0.22"/>
+    <line x1="1610" y1="0" x2="1610" y2="1080" stroke-opacity="0.18"/>
+    <line x1="1500" y1="0" x2="1500" y2="1080" stroke-opacity="0.14"/>
+    <line x1="1400" y1="0" x2="1400" y2="1080" stroke-opacity="0.08"/>
+  </g>
+
+  <!-- High-Tech Circuit Interconnect Traces (Mạch điện tử kết nối các nút) -->
+  <g stroke="#0284c7" stroke-width="1.2" stroke-opacity="0.35" fill="none">
+    <polyline points="120,380 180,380 210,350 210,260 270,260" stroke-dasharray="3, 3"/>
+    <polyline points="210,540 260,540 310,590 380,590" stroke-dasharray="4, 3"/>
+    <polyline points="50,680 120,680 160,720 210,720" stroke-dasharray="2, 3"/>
+  </g>
+  <g stroke="#e11d48" stroke-width="1.2" stroke-opacity="0.32" fill="none">
+    <polyline points="1800,380 1740,380 1710,350 1710,260 1650,260" stroke-dasharray="3, 3"/>
+    <polyline points="1710,540 1660,540 1610,590 1540,590" stroke-dasharray="4, 3"/>
+    <polyline points="1870,680 1800,680 1760,720 1710,720" stroke-dasharray="2, 3"/>
+  </g>
+
+  <!-- ==================== EXQUISITE SOPHISTICATED GLOWING NODES ==================== -->
+
+  <!-- [MAJOR NODE 1 - Left Cyan Primary Junction] -->
+  <g transform="translate(210, 260)">
+    <!-- Soft Volumetric Flare -->
+    <circle cx="0" cy="0" r="46" fill="url(#cyanFlareMajor)"/>
+    <!-- Outer Precision Ring -->
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#00f0ff" stroke-width="0.8" opacity="0.6"/>
+    <!-- Inner Dashed Target Orbit -->
+    <circle cx="0" cy="0" r="9" fill="none" stroke="#0284c7" stroke-width="1.2" stroke-dasharray="3, 2"/>
+    <!-- Intense Pinpoint Core -->
+    <circle cx="0" cy="0" r="3.2" fill="#00f0ff"/>
+    <circle cx="0" cy="0" r="1.5" fill="#ffffff"/>
+    <!-- Micro Crosshairs Starburst -->
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#00f0ff" stroke-width="0.8" opacity="0.5"/>
+    <line x1="0" y1="-12" x2="0" y2="12" stroke="#00f0ff" stroke-width="0.8" opacity="0.5"/>
+  </g>
+
+  <!-- [MAJOR NODE 2 - Left Cyan Lower Junction] -->
+  <g transform="translate(120, 560)">
+    <circle cx="0" cy="0" r="52" fill="url(#cyanFlareMajor)"/>
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.5"/>
+    <circle cx="0" cy="0" r="11" fill="none" stroke="#00f0ff" stroke-width="1.2" stroke-dasharray="2, 3"/>
+    <circle cx="0" cy="0" r="3.5" fill="#00f0ff"/>
+    <circle cx="0" cy="0" r="1.5" fill="#ffffff"/>
+  </g>
+
+  <!-- [MAJOR NODE 3 - Right Ruby Primary Junction] -->
+  <g transform="translate(1710, 260)">
+    <!-- Soft Volumetric Flare -->
+    <circle cx="0" cy="0" r="46" fill="url(#rubyFlareMajor)"/>
+    <!-- Outer Precision Ring -->
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#ff2a55" stroke-width="0.8" opacity="0.6"/>
+    <!-- Inner Dashed Target Orbit -->
+    <circle cx="0" cy="0" r="9" fill="none" stroke="#e11d48" stroke-width="1.2" stroke-dasharray="3, 2"/>
+    <!-- Intense Pinpoint Core -->
+    <circle cx="0" cy="0" r="3.2" fill="#ff2a55"/>
+    <circle cx="0" cy="0" r="1.5" fill="#ffffff"/>
+    <!-- Micro Crosshairs Starburst -->
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#ff2a55" stroke-width="0.8" opacity="0.5"/>
+    <line x1="0" y1="-12" x2="0" y2="12" stroke="#ff2a55" stroke-width="0.8" opacity="0.5"/>
+  </g>
+
+  <!-- [MAJOR NODE 4 - Right Ruby Lower Junction] -->
+  <g transform="translate(1800, 560)">
+    <circle cx="0" cy="0" r="52" fill="url(#rubyFlareMajor)"/>
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#fb7185" stroke-width="0.8" opacity="0.5"/>
+    <circle cx="0" cy="0" r="11" fill="none" stroke="#ff2a55" stroke-width="1.2" stroke-dasharray="2, 3"/>
+    <circle cx="0" cy="0" r="3.5" fill="#ff2a55"/>
+    <circle cx="0" cy="0" r="1.5" fill="#ffffff"/>
+  </g>
+
+  <!-- Secondary Medium Nodes (Left Cyan & Accent Ruby) -->
+  <g transform="translate(310, 680)">
+    <circle cx="0" cy="0" r="34" fill="url(#cyanFlareSoft)"/>
+    <circle cx="0" cy="0" r="7" fill="none" stroke="#0284c7" stroke-width="1"/>
+    <circle cx="0" cy="0" r="2.5" fill="#00f0ff"/>
+    <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(420, 380)">
+    <circle cx="0" cy="0" r="38" fill="url(#rubyFlareSoft)"/>
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#e11d48" stroke-width="1" stroke-dasharray="3, 2"/>
+    <circle cx="0" cy="0" r="2.5" fill="#e11d48"/>
+    <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(80, 360)">
+    <circle cx="0" cy="0" r="28" fill="url(#rubyFlareSoft)"/>
+    <circle cx="0" cy="0" r="2" fill="#e11d48"/>
+    <circle cx="0" cy="0" r="1" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(270, 160)">
+    <circle cx="0" cy="0" r="30" fill="url(#cyanFlareSoft)"/>
+    <circle cx="0" cy="0" r="6" fill="none" stroke="#0284c7" stroke-width="0.8"/>
+    <circle cx="0" cy="0" r="2.2" fill="#0284c7"/>
+  </g>
+
+  <!-- Secondary Medium Nodes (Right Ruby & Accent Cyan) -->
+  <g transform="translate(1610, 680)">
+    <circle cx="0" cy="0" r="34" fill="url(#rubyFlareSoft)"/>
+    <circle cx="0" cy="0" r="7" fill="none" stroke="#e11d48" stroke-width="1"/>
+    <circle cx="0" cy="0" r="2.5" fill="#ff2a55"/>
+    <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(1500, 380)">
+    <circle cx="0" cy="0" r="38" fill="url(#cyanFlareSoft)"/>
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#0284c7" stroke-width="1" stroke-dasharray="3, 2"/>
+    <circle cx="0" cy="0" r="2.5" fill="#00f0ff"/>
+    <circle cx="0" cy="0" r="1.2" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(1840, 360)">
+    <circle cx="0" cy="0" r="28" fill="url(#cyanFlareSoft)"/>
+    <circle cx="0" cy="0" r="2" fill="#00f0ff"/>
+    <circle cx="0" cy="0" r="1" fill="#ffffff"/>
+  </g>
+
+  <g transform="translate(1650, 160)">
+    <circle cx="0" cy="0" r="30" fill="url(#rubyFlareSoft)"/>
+    <circle cx="0" cy="0" r="6" fill="none" stroke="#e11d48" stroke-width="0.8"/>
+    <circle cx="0" cy="0" r="2.2" fill="#e11d48"/>
+  </g>
+
+  <!-- Delicate Starlight Micro-Particles (Bụi sáng tinh thể rải đều) -->
+  <g fill="#00f0ff" opacity="0.75">
+    <circle cx="160" cy="180" r="1.5"/><circle cx="280" cy="420" r="1.2"/><circle cx="190" cy="620" r="1.4"/>
+    <circle cx="360" cy="240" r="1.3"/><circle cx="90" cy="740" r="1.5"/><circle cx="340" cy="800" r="1.2"/>
+    <circle cx="470" cy="520" r="1.4"/><circle cx="70" cy="220" r="1.3"/><circle cx="240" cy="880" r="1.5"/>
+  </g>
+  <g fill="#ff2a55" opacity="0.75">
+    <circle cx="1760" cy="180" r="1.5"/><circle cx="1640" cy="420" r="1.2"/><circle cx="1730" cy="620" r="1.4"/>
+    <circle cx="1560" cy="240" r="1.3"/><circle cx="1830" cy="740" r="1.5"/><circle cx="1580" cy="800" r="1.2"/>
+    <circle cx="1450" cy="520" r="1.4"/><circle cx="1850" cy="220" r="1.3"/><circle cx="1680" cy="880" r="1.5"/>
+  </g>
+
+  <!-- ==================== REFINED HOLOGRAPHIC BINARY STREAMS ==================== -->
+  
+  <!-- Left Cascading Binary Streams -->
+  <g font-family="Consolas, 'Courier New', monospace" font-size="13" font-weight="600" fill="#64748b">
+    <!-- Outer Column 1 -->
+    <g opacity="0.25">
+      <text x="25" y="80">0</text><text x="25" y="105">1</text><text x="25" y="130">1</text><text x="25" y="155">0</text><text x="25" y="180">1</text><text x="25" y="205">0</text><text x="25" y="230">0</text><text x="25" y="255">1</text><text x="25" y="280">1</text><text x="25" y="305">0</text><text x="25" y="330">1</text><text x="25" y="355">0</text><text x="25" y="380">1</text><text x="25" y="405">1</text><text x="25" y="430">0</text><text x="25" y="455">1</text><text x="25" y="480">0</text><text x="25" y="505">0</text><text x="25" y="530">1</text><text x="25" y="555">0</text><text x="25" y="580">1</text><text x="25" y="605">1</text><text x="25" y="630">0</text><text x="25" y="655">1</text><text x="25" y="680">0</text><text x="25" y="705">1</text><text x="25" y="730">0</text><text x="25" y="755">1</text><text x="25" y="780">1</text><text x="25" y="805">0</text><text x="25" y="830">1</text><text x="25" y="855">0</text><text x="25" y="880">1</text><text x="25" y="905">0</text><text x="25" y="930">1</text><text x="25" y="955">1</text><text x="25" y="980">0</text>
+    </g>
+
+    <!-- Column 2 (Near Node 2) -->
+    <g opacity="0.38">
+      <text x="85" y="120">1</text><text x="85" y="145">0</text><text x="85" y="170">1</text><text x="85" y="195">1</text><text x="85" y="220">0</text><text x="85" y="245">1</text><text x="85" y="270">0</text><text x="85" y="295">1</text><text x="85" y="320">1</text><text x="85" y="345">0</text><text x="85" y="370" fill="#0284c7" font-weight="bold">1</text><text x="85" y="395">0</text><text x="85" y="420">0</text><text x="85" y="445">1</text><text x="85" y="470">1</text><text x="85" y="495">0</text><text x="85" y="520">1</text><text x="85" y="545">0</text><text x="85" y="570" fill="#00f0ff" font-weight="bold">1</text><text x="85" y="595">1</text><text x="85" y="620">0</text><text x="85" y="645">1</text><text x="85" y="670">0</text><text x="85" y="695">0</text><text x="85" y="720">1</text><text x="85" y="745">1</text><text x="85" y="770">0</text><text x="85" y="795">1</text><text x="85" y="820">0</text><text x="85" y="845">1</text><text x="85" y="870">1</text><text x="85" y="895">0</text>
+    </g>
+
+    <!-- Column 3 (Near Major Node 1) -->
+    <g opacity="0.32">
+      <text x="175" y="70">0</text><text x="175" y="95">1</text><text x="175" y="120">0</text><text x="175" y="145">1</text><text x="175" y="170">1</text><text x="175" y="195">0</text><text x="175" y="220">1</text><text x="175" y="245" fill="#00f0ff" font-weight="bold">0</text><text x="175" y="270" fill="#0284c7" font-weight="bold">1</text><text x="175" y="295">1</text><text x="175" y="320">0</text><text x="175" y="345">1</text><text x="175" y="370">0</text><text x="175" y="395">0</text><text x="175" y="420">1</text><text x="175" y="445">1</text><text x="175" y="470">0</text><text x="175" y="495">1</text><text x="175" y="520">0</text><text x="175" y="545">1</text><text x="175" y="570">1</text><text x="175" y="595">0</text><text x="175" y="620">0</text><text x="175" y="645">1</text><text x="175" y="670">0</text><text x="175" y="695">1</text><text x="175" y="720">1</text><text x="175" y="745">0</text><text x="175" y="770">1</text>
+    </g>
+
+    <!-- Column 4 (Inner Flow) -->
+    <g opacity="0.22">
+      <text x="270" y="180">1</text><text x="270" y="205">0</text><text x="270" y="230">0</text><text x="270" y="255">1</text><text x="270" y="280">1</text><text x="270" y="305">0</text><text x="270" y="330">1</text><text x="270" y="355">0</text><text x="270" y="380">1</text><text x="270" y="405">1</text><text x="270" y="430">0</text><text x="270" y="455">1</text><text x="270" y="480">0</text><text x="270" y="505">0</text><text x="270" y="530">1</text><text x="270" y="555">1</text><text x="270" y="580">0</text><text x="270" y="605">1</text><text x="270" y="630">0</text><text x="270" y="655">1</text><text x="270" y="680">0</text><text x="270" y="705">1</text>
+    </g>
+  </g>
+
+  <!-- Right Cascading Binary Streams -->
+  <g font-family="Consolas, 'Courier New', monospace" font-size="13" font-weight="600" fill="#64748b">
+    <!-- Outer Column 1 -->
+    <g opacity="0.25">
+      <text x="1885" y="80">0</text><text x="1885" y="105">1</text><text x="1885" y="130">1</text><text x="1885" y="155">0</text><text x="1885" y="180">1</text><text x="1885" y="205">0</text><text x="1885" y="230">0</text><text x="1885" y="255">1</text><text x="1885" y="280">1</text><text x="1885" y="305">0</text><text x="1885" y="330">1</text><text x="1885" y="355">0</text><text x="1885" y="380">1</text><text x="1885" y="405">1</text><text x="1885" y="430">0</text><text x="1885" y="455">1</text><text x="1885" y="480">0</text><text x="1885" y="505">0</text><text x="1885" y="530">1</text><text x="1885" y="555">0</text><text x="1885" y="580">1</text><text x="1885" y="605">1</text><text x="1885" y="630">0</text><text x="1885" y="655">1</text><text x="1885" y="680">0</text><text x="1885" y="705">1</text><text x="1885" y="730">0</text><text x="1885" y="755">1</text><text x="1885" y="780">1</text><text x="1885" y="805">0</text><text x="1885" y="830">1</text><text x="1885" y="855">0</text><text x="1885" y="880">1</text><text x="1885" y="905">0</text><text x="1885" y="930">1</text><text x="1885" y="955">1</text><text x="1885" y="980">0</text>
+    </g>
+
+    <!-- Column 2 (Near Node 4) -->
+    <g opacity="0.38">
+      <text x="1825" y="120">1</text><text x="1825" y="145">0</text><text x="1825" y="170">1</text><text x="1825" y="195">1</text><text x="1825" y="220">0</text><text x="1825" y="245">1</text><text x="1825" y="270">0</text><text x="1825" y="295">1</text><text x="1825" y="320">1</text><text x="1825" y="345">0</text><text x="1825" y="370" fill="#e11d48" font-weight="bold">1</text><text x="1825" y="395">0</text><text x="1825" y="420">0</text><text x="1825" y="445">1</text><text x="1825" y="470">1</text><text x="1825" y="495">0</text><text x="1825" y="520">1</text><text x="1825" y="545">0</text><text x="1825" y="570" fill="#ff2a55" font-weight="bold">1</text><text x="1825" y="595">1</text><text x="1825" y="620">0</text><text x="1825" y="645">1</text><text x="1825" y="670">0</text><text x="1825" y="695">0</text><text x="1825" y="720">1</text><text x="1825" y="745">1</text><text x="1825" y="770">0</text><text x="1825" y="795">1</text><text x="1825" y="820">0</text><text x="1825" y="845">1</text><text x="1825" y="870">1</text><text x="1825" y="895">0</text>
+    </g>
+
+    <!-- Column 3 (Near Major Node 3) -->
+    <g opacity="0.32">
+      <text x="1735" y="70">0</text><text x="1735" y="95">1</text><text x="1735" y="120">0</text><text x="1735" y="145">1</text><text x="1735" y="170">1</text><text x="1735" y="195">0</text><text x="1735" y="220">1</text><text x="1735" y="245" fill="#ff2a55" font-weight="bold">0</text><text x="1735" y="270" fill="#e11d48" font-weight="bold">1</text><text x="1735" y="295">1</text><text x="1735" y="320">0</text><text x="1735" y="345">1</text><text x="1735" y="370">0</text><text x="1735" y="395">0</text><text x="1735" y="420">1</text><text x="1735" y="445">1</text><text x="1735" y="470">0</text><text x="1735" y="495">1</text><text x="1735" y="520">0</text><text x="1735" y="545">1</text><text x="1735" y="570">1</text><text x="1735" y="595">0</text><text x="1735" y="620">0</text><text x="1735" y="645">1</text><text x="1735" y="670">0</text><text x="1735" y="695">1</text><text x="1735" y="720">1</text><text x="1735" y="745">0</text><text x="1735" y="770">1</text>
+    </g>
+
+    <!-- Column 4 (Inner Flow) -->
+    <g opacity="0.22">
+      <text x="1640" y="180">1</text><text x="1640" y="205">0</text><text x="1640" y="230">0</text><text x="1640" y="255">1</text><text x="1640" y="280">1</text><text x="1640" y="305">0</text><text x="1640" y="330">1</text><text x="1640" y="355">0</text><text x="1640" y="380">1</text><text x="1640" y="405">1</text><text x="1640" y="430">0</text><text x="1640" y="455">1</text><text x="1640" y="480">0</text><text x="1640" y="505">0</text><text x="1640" y="530">1</text><text x="1640" y="555">1</text><text x="1640" y="580">0</text><text x="1640" y="605">1</text><text x="1640" y="630">0</text><text x="1640" y="655">1</text><text x="1640" y="680">0</text><text x="1640" y="705">1</text>
+    </g>
+  </g>
+</svg>
+

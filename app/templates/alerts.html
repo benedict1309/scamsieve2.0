@@ -1,0 +1,520 @@
+{% extends "base.html" %}
+
+{% block title %}Cảnh báo cộng đồng - P-Sieve{% endblock %}
+
+{% block content %}
+<style>
+.al-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+}
+
+/* Header */
+.al-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.al-header-text h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px;
+}
+.al-header-text p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.6;
+    max-width: 640px;
+}
+.al-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+.btn-al-primary {
+    display: inline-block;
+    padding: 9px 18px;
+    background: #aa0a27;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.btn-al-primary:hover {
+    background: #881020;
+}
+.btn-al-outline {
+    display: inline-block;
+    padding: 9px 18px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.btn-al-outline:hover {
+    border-color: #aa0a27;
+    color: #aa0a27;
+}
+
+/* Stats Row */
+.al-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+.al-stat-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.al-stat-card.highlight {
+    border-color: #fecdd3;
+    background: #fff5f6;
+}
+.al-stat-num {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+.al-stat-card.highlight .al-stat-num {
+    color: #aa0a27;
+}
+.al-stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Toolbar */
+.al-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.al-filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.cat-pill {
+    padding: 7px 16px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 20px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.cat-pill:hover {
+    border-color: #aa0a27;
+    color: #aa0a27;
+}
+.cat-pill.active {
+    background: #aa0a27;
+    border-color: #aa0a27;
+    color: #fff;
+}
+.al-search-wrap {
+    min-width: 280px;
+    flex-grow: 1;
+    max-width: 360px;
+}
+.search-box-input {
+    width: 100%;
+    padding: 8px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #0f172a;
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+}
+.search-box-input:focus {
+    outline: none;
+    border-color: #aa0a27;
+    box-shadow: 0 0 0 3px rgba(170,10,39,0.08);
+}
+.search-box-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Feed List */
+.alerts-feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.alert-card-item {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #94a3b8;
+    border-radius: 10px;
+    padding: 20px 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.alert-card-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.alert-card-item.danger-level {
+    border-left-color: #aa0a27;
+}
+.alert-card-item.warn-level {
+    border-left-color: #d97706;
+}
+
+.item-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+.item-target-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.item-target-text {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: monospace, sans-serif;
+    letter-spacing: 0.2px;
+}
+.item-badge-danger {
+    background: #fff1f2;
+    color: #991b1b;
+    border: 1px solid #fecdd3;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.2px;
+}
+.item-badge-warn {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.2px;
+}
+.item-timestamp {
+    font-size: 12px;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+.item-tags-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.tag-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+.tag-label-scam {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+.tag-label-type {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.item-detail-text {
+    font-size: 13.5px;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    background: #f8fafc;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 2px solid #cbd5e1;
+}
+
+.item-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.item-source-note {
+    font-size: 12px;
+    color: #64748b;
+}
+.item-action-buttons {
+    display: flex;
+    gap: 8px;
+}
+.btn-action-sm {
+    padding: 5px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #fff;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.btn-action-sm:hover {
+    border-color: #aa0a27;
+    color: #aa0a27;
+}
+
+.community-alert-empty {
+    text-align: center;
+    padding: 48px 20px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Footer Banner */
+.al-footer-banner {
+    margin-top: 36px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 24px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.al-footer-text h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+.al-footer-text p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .al-header {
+        flex-direction: column;
+        gap: 14px;
+    }
+    .al-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .al-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .al-search-wrap {
+        max-width: 100%;
+    }
+    .al-footer-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+
+<section class="al-page">
+    <div class="al-header">
+        <div class="al-header-text">
+            <h1>Cảnh báo cộng đồng</h1>
+            <p>Danh sách các số điện thoại, website độc hại và thủ đoạn lừa đảo được người dân phản ánh và hệ thống xác minh.</p>
+        </div>
+        <div class="al-header-actions">
+            <a href="/report" class="btn-al-primary">Gửi báo cáo mới</a>
+            <a href="/scan" class="btn-al-outline">Kiểm tra thông tin</a>
+        </div>
+    </div>
+
+    <!-- 4 Khối thông số tổng hợp -->
+    <div class="al-stats-grid">
+        <div class="al-stat-card highlight">
+            <div class="al-stat-num">{{ recent_alerts|length if recent_alerts else 0 }}</div>
+            <div class="al-stat-label">Cảnh báo gần đây</div>
+        </div>
+        <div class="al-stat-card">
+            <div class="al-stat-num">Liên tục</div>
+            <div class="al-stat-label">Cập nhật dữ liệu</div>
+        </div>
+        <div class="al-stat-card">
+            <div class="al-stat-num">Mạo danh</div>
+            <div class="al-stat-label">Thủ đoạn phổ biến</div>
+        </div>
+        <div class="al-stat-card">
+            <div class="al-stat-num">24/7</div>
+            <div class="al-stat-label">Trạng thái hệ thống</div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc phân loại và ô tìm kiếm -->
+    <div class="al-toolbar">
+        <div class="al-filter-pills" id="alerts-category-pills">
+            <button type="button" class="cat-pill active" data-filter="all">Tất cả</button>
+            <button type="button" class="cat-pill" data-filter="url">Website</button>
+            <button type="button" class="cat-pill" data-filter="phone">Số điện thoại</button>
+            <button type="button" class="cat-pill" data-filter="bank_account">Tài khoản ngân hàng</button>
+            <button type="button" class="cat-pill" data-filter="text">Tin nhắn</button>
+        </div>
+        <div class="al-search-wrap">
+            <input type="text" id="alerts-search-input" class="search-box-input" placeholder="Tìm theo số điện thoại, tên miền, từ khóa...">
+        </div>
+    </div>
+
+    <!-- Danh sách thẻ cảnh báo -->
+    <div class="alerts-feed-list" id="alerts-feed-list">
+        {% if recent_alerts %}
+            {% for alert in recent_alerts %}
+            <div class="alert-card-item {% if alert.is_verified %}danger-level{% elif alert.type == 'bank_account' %}warn-level{% endif %}" data-type="{{ alert.type or '' }}" data-search="{{ (alert.display_target ~ ' ' ~ alert.scam_label ~ ' ' ~ (alert.detail_note or ''))|lower }}">
+                <div class="item-header-row">
+                    <div class="item-target-wrap">
+                        <span class="item-target-text">{{ alert.display_target }}</span>
+                        {% if alert.is_verified %}
+                        <span class="item-badge-danger">Đã xác thực lừa đảo{% if alert.confidence_pct %} (Độ tin cậy: {{ alert.confidence_pct }}%){% endif %}</span>
+                        {% elif alert.verification_label == 'Ghi nhận nghi vấn' %}
+                        <span class="item-badge-warn">Ghi nhận nghi vấn{% if alert.confidence_pct %} (Độ tin cậy: {{ alert.confidence_pct }}%){% endif %}</span>
+                        {% else %}
+                        <span class="item-badge-warn">Đang đối soát</span>
+                        {% endif %}
+                    </div>
+                    <span class="item-timestamp">{{ alert.created_at }}</span>
+                </div>
+
+                <div class="item-tags-row">
+                    <span class="tag-label tag-label-scam">{{ alert.scam_label }}</span>
+                    <span class="tag-label tag-label-type">{{ alert.content_type_label }}</span>
+                </div>
+
+                {% if alert.detail_note and alert.detail_note != alert.display_target and alert.detail_note != "Cộng đồng vừa báo cáo" %}
+                <div class="item-detail-text">
+                    {{ alert.detail_note }}
+                </div>
+                {% endif %}
+
+                <div class="item-footer-row">
+                    <span class="item-source-note">Nguồn: Cộng đồng đóng góp & Hệ thống P-Sieve kiểm chứng</span>
+                    <div class="item-action-buttons">
+                        <a href="/scan" class="btn-action-sm">Kiểm tra thông tin</a>
+                        <button type="button" class="btn-action-sm btn-copy-target" data-copy="{{ alert.display_target }}">Sao chép</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="community-alert-empty">Hiện chưa có cảnh báo mới nào được ghi nhận trong danh sách.</div>
+        {% endif %}
+    </div>
+
+    <!-- Khối kêu gọi đóng góp cuối trang -->
+    <div class="al-footer-banner">
+        <div class="al-footer-text">
+            <h3>Đóng góp thông tin cho cộng đồng</h3>
+            <p>Nếu bạn gặp phải số điện thoại, tin nhắn hoặc website nghi vấn, hãy chia sẻ để mọi người cùng phòng tránh.</p>
+        </div>
+        <a href="/report" class="btn-al-primary">Gửi báo cáo ngay</a>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const pills = document.querySelectorAll("#alerts-category-pills .cat-pill");
+    const searchInput = document.getElementById("alerts-search-input");
+    const cards = document.querySelectorAll(".alert-card-item");
+    let currentFilter = "all";
+
+    function filterAlerts() {
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+        cards.forEach(card => {
+            const cardType = (card.getAttribute("data-type") || "").toLowerCase();
+            const cardSearch = (card.getAttribute("data-search") || "").toLowerCase();
+
+            const matchesFilter = (currentFilter === "all") || (cardType === currentFilter);
+            const matchesQuery = !query || cardSearch.includes(query);
+
+            if (matchesFilter && matchesQuery) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    pills.forEach(pill => {
+        pill.addEventListener("click", function() {
+            pills.forEach(p => p.classList.remove("active"));
+            this.classList.add("active");
+            currentFilter = this.getAttribute("data-filter");
+            filterAlerts();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener("input", filterAlerts);
+    }
+
+    const copyBtns = document.querySelectorAll(".btn-copy-target");
+    copyBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            const textToCopy = this.getAttribute("data-copy");
+            if (textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = this.textContent;
+                    this.textContent = "Đã sao chép";
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 1800);
+                }).catch(() => {
+                    alert("Đã sao chép: " + textToCopy);
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

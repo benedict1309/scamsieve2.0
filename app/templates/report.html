@@ -1,0 +1,568 @@
+{% extends "base.html" %}
+
+{% block title %}Báo cáo lừa đảo - P-Sieve{% endblock %}
+
+{% block content %}
+<style>
+.rp-page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+
+.rp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.rp-header-text h1 { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px; }
+.rp-header-text p { font-size: 14px; color: #64748b; margin: 0; max-width: 520px; line-height: 1.6; }
+.rp-header-actions { display: flex; gap: 10px; flex-shrink: 0; margin-top: 4px; }
+
+.btn-rp-outline {
+    display: inline-block;
+    padding: 9px 18px;
+    border: 1.5px solid #aa0a27;
+    border-radius: 8px;
+    color: #aa0a27;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.btn-rp-outline:hover { background: #aa0a27; color: #fff; }
+
+.rp-body { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+
+.alert-msg {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+.alert-msg.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.alert-msg.error   { background: #fff5f5; color: #991b1b; border: 1px solid #fecaca; }
+
+/* FORM CARD */
+.form-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #aa0a27;
+    border-radius: 12px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+.form-card-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px; }
+.form-card-sub { font-size: 13px; color: #64748b; margin: 0 0 24px; line-height: 1.5; }
+
+.field-group { margin-bottom: 20px; }
+.field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+.field-label .req { color: #aa0a27; margin-left: 2px; }
+
+.type-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0; }
+.type-pill {
+    padding: 7px 16px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 20px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.type-pill:hover { border-color: #aa0a27; color: #aa0a27; }
+.type-pill.active { background: #aa0a27; border-color: #aa0a27; color: #fff; }
+
+.field-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #0f172a;
+    background: #fff;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+.field-input:focus { outline: none; border-color: #aa0a27; box-shadow: 0 0 0 3px rgba(170,10,39,0.08); }
+.field-input::placeholder { color: #9ca3af; }
+
+.field-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #0f172a;
+    background: #fff;
+    cursor: pointer;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
+.field-select:focus { outline: none; border-color: #aa0a27; }
+
+.field-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #0f172a;
+    background: #fff;
+    resize: vertical;
+    line-height: 1.5;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+    font-family: inherit;
+}
+.field-textarea:focus { outline: none; border-color: #aa0a27; box-shadow: 0 0 0 3px rgba(170,10,39,0.08); }
+
+.char-counter { font-size: 11px; color: #9ca3af; text-align: right; margin-top: 4px; }
+
+/* DROPZONE */
+.dropzone-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 10px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafafa;
+}
+.dropzone-area:hover, .dropzone-area.drag-active {
+    border-color: #aa0a27;
+    background: #fff5f6;
+}
+.dropzone-title { font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 4px; }
+.dropzone-sub { font-size: 12px; color: #9ca3af; }
+
+.img-preview-wrap {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+}
+.img-preview-wrap img { max-height: 180px; border-radius: 8px; border: 1px solid #e5e7eb; }
+.ocr-status { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 4px; }
+.ocr-status.loading { background: #eff6ff; color: #1d4ed8; }
+.ocr-status.success { background: #f0fdf4; color: #166534; }
+.ocr-status.warning { background: #fffbeb; color: #92400e; }
+
+.btn-remove-img {
+    padding: 5px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 12px;
+    color: #64748b;
+    cursor: pointer;
+}
+.btn-remove-img:hover { border-color: #aa0a27; color: #aa0a27; }
+
+.submit-row { margin-top: 24px; }
+.btn-submit {
+    width: 100%;
+    padding: 13px 20px;
+    background: #aa0a27;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.2px;
+}
+.btn-submit:hover { background: #881020; }
+.submit-note { text-align: center; font-size: 12px; color: #9ca3af; margin-top: 8px; }
+
+/* SIDEBAR */
+.rp-sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+.side-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px 22px;
+}
+.side-card-title { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 14px; }
+
+.steps-list { display: flex; flex-direction: column; gap: 14px; }
+.step-item { display: flex; gap: 12px; align-items: flex-start; }
+.step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #aa0a27;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.step-text { font-size: 13px; color: #374151; line-height: 1.5; padding-top: 4px; }
+
+.side-card-emergency {
+    background: #fff5f6;
+    border: 1px solid #fecdd3;
+    border-radius: 12px;
+    padding: 20px 22px;
+}
+.side-card-emergency .side-card-title { color: #991b1b; }
+.emergency-points { list-style: none; padding: 0; margin: 0 0 16px; }
+.emergency-points li {
+    font-size: 13px;
+    color: #374151;
+    padding: 5px 0;
+    border-bottom: 1px solid #fde8ea;
+    line-height: 1.5;
+}
+.emergency-points li:last-child { border-bottom: none; }
+.btn-emergency {
+    display: block;
+    text-align: center;
+    padding: 9px 14px;
+    background: #aa0a27;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+.btn-emergency:hover { background: #881020; }
+
+@media (max-width: 768px) {
+    .rp-header { flex-direction: column; gap: 16px; }
+    .rp-body { grid-template-columns: 1fr; }
+    .rp-sidebar { order: -1; }
+}
+</style>
+
+<section class="rp-page">
+    <div class="rp-header">
+        <div class="rp-header-text">
+            <h1>Báo cáo lừa đảo</h1>
+            <p>Gửi thông tin về số điện thoại, website hoặc tài khoản ngân hàng nghi ngờ để giúp cảnh báo cho cộng đồng.</p>
+        </div>
+        <div class="rp-header-actions">
+            <a href="/alerts" class="btn-rp-outline">Xem cảnh báo cộng đồng</a>
+        </div>
+    </div>
+
+    {% if success %}
+    <div class="alert-msg success">{{ success }}</div>
+    {% endif %}
+    {% if error %}
+    <div class="alert-msg error">{{ error }}</div>
+    {% endif %}
+
+    <div class="rp-body">
+        <!-- CỘT TRÁI: FORM -->
+        <div>
+            <div class="form-card">
+                <div class="form-card-title">Gửi thông tin phản ánh</div>
+                <div class="form-card-sub">Thông tin bạn gửi sẽ được kiểm tra và cập nhật vào hệ thống cảnh báo chung.</div>
+
+                <form method="post" action="/report" enctype="multipart/form-data" id="report-form">
+
+                    <!-- LOẠI ĐỐI TƯỢNG -->
+                    <div class="field-group">
+                        <label class="field-label">Loại thông tin cần báo cáo <span class="req">*</span></label>
+                        <div class="type-pills" id="type-pills">
+                            <button type="button" class="type-pill {% if not prefill_type or prefill_type == 'phone' %}active{% endif %}" data-val="phone">Số điện thoại</button>
+                            <button type="button" class="type-pill {% if prefill_type == 'url' %}active{% endif %}" data-val="url">Website</button>
+                            <button type="button" class="type-pill {% if prefill_type == 'bank_account' %}active{% endif %}" data-val="bank_account">Tài khoản ngân hàng</button>
+                            <button type="button" class="type-pill {% if prefill_type == 'text' %}active{% endif %}" data-val="text">Tin nhắn</button>
+                        </div>
+                        <select id="content_type" name="content_type" style="display:none;">
+                            <option value="phone" {% if not prefill_type or prefill_type == "phone" %}selected{% endif %}>Số điện thoại</option>
+                            <option value="url" {% if prefill_type == "url" %}selected{% endif %}>Website</option>
+                            <option value="bank_account" {% if prefill_type == "bank_account" %}selected{% endif %}>Tài khoản ngân hàng</option>
+                            <option value="text" {% if prefill_type == "text" %}selected{% endif %}>Tin nhắn</option>
+                        </select>
+                    </div>
+
+                    <!-- NỘI DUNG CHÍNH -->
+                    <div class="field-group">
+                        <label for="content" class="field-label">Số điện thoại / Website / Tài khoản lừa đảo <span class="req">*</span></label>
+                        <input
+                            type="text"
+                            id="content"
+                            name="content"
+                            class="field-input"
+                            placeholder="Ví dụ: 0247300..., https://vietcombank-login.top, 9876543210..."
+                            value="{{ prefill_content or '' }}"
+                        >
+                    </div>
+
+                    <!-- HÌNH THỨC LỪA ĐẢO -->
+                    <div class="field-group">
+                        <label for="scam_type" class="field-label">Hình thức lừa đảo</label>
+                        <select id="scam_type" name="scam_type" class="field-select">
+                            <option value="Mạo danh ngân hàng / Dụ bấm link trộm OTP">Mạo danh ngân hàng — dụ bấm link lấy mã OTP</option>
+                            <option value="Giả danh cơ quan chức năng (Công an, Tòa án)">Giả danh công an, tòa án, viện kiểm sát</option>
+                            <option value="Lừa đảo tuyển dụng làm nhiệm vụ online">Tuyển dụng làm việc online, nạp tiền nhận hoa hồng</option>
+                            <option value="Cuộc gọi nháy máy / Trừ cước viễn thông">Gọi nháy máy, ép gọi lại trừ cước</option>
+                            <option value="Sàn đầu tư tài chính / Tiền ảo / Cờ bạc trá hình">Sàn đầu tư ảo, tiền ảo, cờ bạc trực tuyến</option>
+                            <option value="Giả mạo nhân viên viễn thông / Đòi nợ cước">Giả nhân viên viễn thông, đe dọa khóa SIM</option>
+                            <option value="Khác">Hình thức khác</option>
+                        </select>
+                    </div>
+
+                    <!-- CHI TIẾT DIỄN BIẾN -->
+                    <div class="field-group">
+                        <label for="reporter_note" class="field-label">Chi tiết vụ việc (không bắt buộc)</label>
+                        <textarea
+                            id="reporter_note"
+                            name="reporter_note"
+                            rows="4"
+                            class="field-textarea"
+                            placeholder="Mô tả ngắn: đối tượng xưng danh là ai, yêu cầu gì, đã xảy ra như thế nào..."
+                            maxlength="1000"
+                        ></textarea>
+                        <div class="char-counter"><span id="char-count">0</span> / 1000 ký tự</div>
+                    </div>
+
+                    <!-- ẢNH BẰNG CHỨNG -->
+                    <div class="field-group">
+                        <label class="field-label">Ảnh chụp màn hình bằng chứng (không bắt buộc)</label>
+                        <div id="report-dropzone" class="dropzone-area">
+                            <input type="file" id="report_image_input" name="image" accept="image/*" class="file-input-hidden" style="display:none;">
+                            <div id="report-dropzone-content">
+                                <div class="dropzone-title">Kéo thả ảnh vào đây hoặc bấm để chọn tệp</div>
+                                <div class="dropzone-sub">Định dạng PNG, JPG — hoặc dán trực tiếp từ clipboard (Ctrl+V)</div>
+                            </div>
+                            <div id="report-image-preview-wrapper" class="img-preview-wrap">
+                                <img id="report-image-preview" src="" alt="Xem trước ảnh">
+                                <div id="report-ocr-status" class="ocr-status"></div>
+                                <button type="button" id="btn-remove-report-image" class="btn-remove-img">Xóa ảnh</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GỬI -->
+                    <div class="submit-row">
+                        <button type="submit" class="btn-submit">Gửi báo cáo</button>
+                        <p class="submit-note">Báo cáo hoàn toàn ẩn danh. Thông tin người gửi không được lưu trữ.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: SIDEBAR -->
+        <div class="rp-sidebar">
+            <div class="side-card">
+                <div class="side-card-title">Quy trình xử lý</div>
+                <div class="steps-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">Bạn gửi thông tin nghi ngờ qua biểu mẫu này.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">Hệ thống kiểm tra và đối chiếu với cơ sở dữ liệu hiện có.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">Thông tin được cập nhật vào danh sách cảnh báo cộng đồng.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-card-emergency">
+                <div class="side-card-title">Đã lỡ chuyển tiền hoặc lộ mã OTP?</div>
+                <ul class="emergency-points">
+                    <li>Khóa ngay tài khoản ngân hàng qua ứng dụng di động hoặc gọi hotline.</li>
+                    <li>Đổi mật khẩu Internet Banking và ứng dụng ví điện tử.</li>
+                    <li>Trình báo cơ quan công an gần nhất để được hỗ trợ.</li>
+                </ul>
+                <a href="/scan" class="btn-emergency">Xem hướng dẫn ứng cứu khẩn cấp</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("report-form");
+    const dropzone = document.getElementById("report-dropzone");
+    const fileInput = document.getElementById("report_image_input");
+    const dropContent = document.getElementById("report-dropzone-content");
+    const previewWrapper = document.getElementById("report-image-preview-wrapper");
+    const previewImg = document.getElementById("report-image-preview");
+    const ocrStatus = document.getElementById("report-ocr-status");
+    const btnRemove = document.getElementById("btn-remove-report-image");
+    const contentInput = document.getElementById("content");
+    const typeSelect = document.getElementById("content_type");
+    const scamTypeSelect = document.getElementById("scam_type");
+    const noteTextarea = document.getElementById("reporter_note");
+    const pillButtons = document.querySelectorAll(".type-pill");
+    const charCount = document.getElementById("char-count");
+
+    // Đếm ký tự
+    if (noteTextarea && charCount) {
+        noteTextarea.addEventListener("input", function() {
+            charCount.textContent = this.value.length;
+        });
+    }
+
+    // Đồng bộ pill chọn loại
+    pillButtons.forEach(btn => {
+        btn.addEventListener("click", function() {
+            pillButtons.forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+            const val = this.getAttribute("data-val");
+            if (typeSelect) typeSelect.value = val;
+        });
+    });
+
+    function setActivePill(val) {
+        pillButtons.forEach(btn => {
+            btn.classList.toggle("active", btn.getAttribute("data-val") === val);
+        });
+        if (typeSelect) typeSelect.value = val;
+    }
+
+    if (!dropzone || !fileInput) return;
+
+    // Kiểm tra khi submit
+    if (form) {
+        form.addEventListener("submit", function(e) {
+            const hasContent = contentInput && contentInput.value.trim().length > 0;
+            const hasImage = fileInput && fileInput.files && fileInput.files.length > 0;
+            if (!hasContent && !hasImage) {
+                e.preventDefault();
+                alert("Vui lòng nhập số điện thoại, đường link hoặc chọn ảnh chụp màn hình cần báo cáo.");
+                contentInput.focus();
+            }
+        });
+    }
+
+    dropzone.addEventListener("click", function(e) {
+        if (e.target !== btnRemove) fileInput.click();
+    });
+
+    ["dragenter", "dragover"].forEach(name => {
+        dropzone.addEventListener(name, function(e) {
+            e.preventDefault(); e.stopPropagation();
+            dropzone.classList.add("drag-active");
+        });
+    });
+
+    ["dragleave", "drop"].forEach(name => {
+        dropzone.addEventListener(name, function(e) {
+            e.preventDefault(); e.stopPropagation();
+            dropzone.classList.remove("drag-active");
+        });
+    });
+
+    dropzone.addEventListener("drop", function(e) {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0 && files[0].type.startsWith("image/")) {
+            fileInput.files = files;
+            handleImageUpload(files[0]);
+        }
+    });
+
+    window.addEventListener("paste", function(e) {
+        const items = (e.clipboardData || window.clipboardData).items;
+        if (!items) return;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                const blob = item.getAsFile();
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(blob);
+                fileInput.files = dataTransfer.files;
+                handleImageUpload(blob);
+                break;
+            }
+        }
+    });
+
+    fileInput.addEventListener("change", function() {
+        if (fileInput.files && fileInput.files.length > 0) handleImageUpload(fileInput.files[0]);
+    });
+
+    btnRemove.addEventListener("click", function(e) {
+        e.stopPropagation();
+        fileInput.value = "";
+        previewWrapper.style.display = "none";
+        dropContent.style.display = "block";
+        ocrStatus.className = "ocr-status";
+        ocrStatus.textContent = "";
+    });
+
+    function handleImageUpload(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            dropContent.style.display = "none";
+            previewWrapper.style.display = "flex";
+            ocrStatus.className = "ocr-status loading";
+            ocrStatus.textContent = "Đang đọc nội dung từ ảnh...";
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            fetch("/api/ocr-extract", { method: "POST", body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    ocrStatus.className = "ocr-status success";
+                    ocrStatus.textContent = "Đã đọc thành công. Thông tin đã được điền tự động.";
+                    if (data.extracted_text && data.extracted_text.trim()) {
+                        contentInput.value = data.extracted_text.trim();
+                        setActivePill("text");
+                    } else if (data.extracted_phone && data.extracted_phone.trim()) {
+                        contentInput.value = data.extracted_phone.trim();
+                        setActivePill("phone");
+                    } else if (data.extracted_url && data.extracted_url.trim()) {
+                        contentInput.value = data.extracted_url.trim();
+                        setActivePill("url");
+                    }
+                    if (data.extracted_text) {
+                        const extra = "Chữ trích xuất từ ảnh: " + data.extracted_text;
+                        if (!noteTextarea.value.includes(data.extracted_text)) {
+                            noteTextarea.value = noteTextarea.value ? (noteTextarea.value + "\n\n" + extra) : extra;
+                            charCount.textContent = noteTextarea.value.length;
+                        }
+                    }
+                    if (data.category && scamTypeSelect) {
+                        for (let opt of scamTypeSelect.options) {
+                            if (opt.value.toLowerCase().includes(data.category.toLowerCase()) ||
+                                data.category.toLowerCase().includes(opt.value.toLowerCase())) {
+                                scamTypeSelect.value = opt.value;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    ocrStatus.className = "ocr-status warning";
+                    ocrStatus.textContent = data.error || "Đã nhận ảnh. Bạn có thể gửi báo cáo kèm ảnh bình thường.";
+                }
+            })
+            .catch(() => {
+                ocrStatus.className = "ocr-status warning";
+                ocrStatus.textContent = "Đã nhận ảnh. Hệ thống sẽ xử lý khi bạn bấm Gửi báo cáo.";
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

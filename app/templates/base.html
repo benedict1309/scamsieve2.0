@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}P-Sieve - Học viện Công nghệ Bưu chính Viễn thông{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=9.0">
+</head>
+<body>
+    <header class="site-header">
+        <a href="/" class="brand-container">
+            <img src="/static/images/ptit_logo.png" alt="PTIT" class="header-ptit-logo">
+            <div class="brand-text-block">
+                <span class="brand-title">P-Sieve</span>
+            </div>
+        </a>
+        <nav class="main-nav">
+            <a href="/">Trang chủ</a>
+            <a href="/scan">Kiểm tra</a>
+            <a href="/report">Báo cáo</a>
+            <a href="/alerts">Cảnh báo cộng đồng</a>
+            <a href="/test-shield">Tiện ích Extension</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ==================== MESSENGER CHATBOT WIDGET P-SIEVE ==================== -->
+    <div id="msChatTrigger" class="ms-chat-trigger" onclick="toggleMessengerChat()" title="Mở Chatbot của P-Sieve">
+        <div class="ms-trigger-avatar">
+            <img src="/static/images/ptit_logo.png" alt="P-Sieve Logo" class="ms-trigger-img">
+            <span class="ms-online-indicator"></span>
+        </div>
+        <div class="ms-trigger-text">
+            <span class="ms-trigger-title">Trợ lý AI P-Sieve</span>
+            <span class="ms-trigger-subtitle">Chatbot của P-Sieve</span>
+        </div>
+    </div>
+
+    <div id="msChatWindow" class="ms-chat-window" style="display: none;">
+        <div class="ms-chat-header">
+            <div class="ms-header-info">
+                <div class="ms-header-avatar">
+                    <img src="/static/images/ptit_logo.png" alt="P-Sieve Logo" class="ms-header-img">
+                    <span class="ms-header-status-dot"></span>
+                </div>
+                <div class="ms-header-titles">
+                    <span class="ms-header-name">Trợ lý AI P-Sieve</span>
+                    <span class="ms-header-desc">Chatbot của P-Sieve - Trực tuyến 24/7</span>
+                </div>
+            </div>
+            <div class="ms-header-actions">
+                <button type="button" class="ms-header-btn" onclick="clearMsConversation()" title="Làm mới đoạn chat">Xóa lịch sử</button>
+                <button type="button" class="ms-close-btn" onclick="closeMessengerChat()" title="Thu nhỏ chat">[ × ]</button>
+            </div>
+        </div>
+
+        <div class="ms-quick-topics">
+            <div class="ms-quick-label">Tình huống khẩn cấp thường gặp:</div>
+            <div class="ms-quick-chips">
+                <button type="button" class="ms-chip ms-chip-critical" onclick="sendMsQuickPrompt('Cứu tôi với, tôi lỡ chuyển tiền và gửi mã OTP cho đối tượng rồi, bây giờ phải làm gì?')">[KHẨN CẤP] Lỡ chuyển tiền / lộ OTP</button>
+                <button type="button" class="ms-chip ms-chip-critical" onclick="sendMsQuickPrompt('Tôi lỡ tải và cài file .apk lạ từ đường link gửi qua Zalo, làm sao gỡ bỏ ngay?')">[KHẨN CẤP] Lỡ cài file .apk lạ</button>
+                <button type="button" class="ms-chip" onclick="executeMsAction('show_bank_hotlines')">[HOTLINE] Danh bạ Khóa Thẻ 24/7</button>
+                <button type="button" class="ms-chip" onclick="sendMsQuickPrompt('Có người tự xưng Công an/Viện kiểm sát dọa bắt vì liên quan vụ án rửa tiền, bắt chuyển tiền điều tra?')">Công an gọi dọa bắt</button>
+                <button type="button" class="ms-chip" onclick="sendMsQuickPrompt('Kiểm tra giúp tôi đường link này có an toàn không: ')">Kiểm tra link khả nghi</button>
+            </div>
+        </div>
+
+        <div id="msMessagesStream" class="ms-messages-stream">
+            <div class="ms-msg-row ms-row-assistant">
+                <div class="ms-msg-avatar">
+                    <img src="/static/images/ptit_logo.png" alt="P-Sieve">
+                </div>
+                <div class="ms-msg-bubble ms-bubble-assistant">
+                    <div class="ms-msg-sender">Trợ lý AI P-Sieve (Học viện PTIT)</div>
+                    <div class="ms-msg-text">
+                        Xin chào! Tôi là Trợ lý AI P-Sieve. Hãy gửi số tài khoản, link website nghi ngờ, hoặc mô tả tình huống bạn vừa gặp để tôi phân tích và hướng dẫn ứng cứu khẩn cấp ngay lập tức.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="msTypingIndicator" class="ms-typing-indicator" style="display: none;">
+            <div class="ms-typing-dots">
+                <span class="ms-dot"></span>
+                <span class="ms-dot"></span>
+                <span class="ms-dot"></span>
+            </div>
+            <span class="ms-typing-text">P-Sieve AI đang phân tích dữ liệu...</span>
+        </div>
+
+        <form id="msChatForm" class="ms-chat-form" onsubmit="handleMsSubmit(event)">
+            <div class="ms-input-container">
+                <textarea id="msUserInput" class="ms-user-input" rows="1" placeholder="Nhập câu hỏi hoặc tình huống nghi ngờ..." onkeydown="handleMsKeyDown(event)" required></textarea>
+                <button type="submit" id="msSendBtn" class="ms-send-btn">Gửi</button>
+            </div>
+            <div class="ms-form-footer">
+                Bảo vệ an ninh số bởi PTIT - Tuyệt đối không cung cấp OTP cho bất kỳ ai.
+            </div>
+        </form>
+    </div>
+
+    <footer class="site-footer">
+        <p>P-Sieve — Hệ thống tra cứu và cảnh báo lừa đảo trực tuyến.</p>
+        <p class="disclaimer">Đơn vị phát triển: Học viện Công nghệ Bưu chính Viễn thông (PTIT).</p>
+    </footer>
+
+    <script>
+        var msConversationHistory = [];
+
+        function toggleMessengerChat() {
+            var chatWin = document.getElementById('msChatWindow');
+            if (!chatWin) return;
+            if (chatWin.style.display === 'none' || chatWin.style.display === '') {
+                openMessengerChat();
+            } else {
+                closeMessengerChat();
+            }
+        }
+
+        function openMessengerChat() {
+            var chatWin = document.getElementById('msChatWindow');
+            if (!chatWin) return;
+            chatWin.style.display = 'flex';
+            var input = document.getElementById('msUserInput');
+            if (input) {
+                setTimeout(function() { input.focus(); }, 150);
+            }
+            scrollMsToBottom();
+        }
+
+        function closeMessengerChat() {
+            var chatWin = document.getElementById('msChatWindow');
+            if (chatWin) {
+                chatWin.style.display = 'none';
+            }
+        }
+
+        function clearMsConversation() {
+            msConversationHistory = [];
+            var stream = document.getElementById('msMessagesStream');
+            if (!stream) return;
+            stream.innerHTML = '<div class="ms-msg-row ms-row-assistant">' +
+                '<div class="ms-msg-avatar"><img src="/static/images/ptit_logo.png" alt="P-Sieve"></div>' +
+                '<div class="ms-msg-bubble ms-bubble-assistant">' +
+                '<div class="ms-msg-sender">Trợ lý AI P-Sieve (Học viện PTIT)</div>' +
+                '<div class="ms-msg-text">Lịch sử tư vấn đã được làm mới. Bạn cần hỗ trợ kiểm tra đường link, số tài khoản hoặc tình huống nghi vấn nào?</div>' +
+                '</div></div>';
+            scrollMsToBottom();
+        }
+
+        function formatMsMarkdown(text) {
+            if (!text) return '';
+            var escaped = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            // Bold **text**
+            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Bullet points
+            var lines = escaped.split('\n');
+            var inList = false;
+            var html = '';
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (line.startsWith('- ') || line.startsWith('* ')) {
+                    if (!inList) {
+                        html += '<ul>';
+                        inList = true;
+                    }
+                    html += '<li>' + line.substring(2) + '</li>';
+                } else {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    if (line) {
+                        html += '<p>' + line + '</p>';
+                    }
+                }
+            }
+            if (inList) {
+                html += '</ul>';
+            }
+            return html || escaped;
+        }
+
+        function scrollMsToBottom() {
+            var stream = document.getElementById('msMessagesStream');
+            if (stream) {
+                stream.scrollTop = stream.scrollHeight;
+            }
+        }
+
+        function appendMsMessage(role, text, metadata) {
+            var stream = document.getElementById('msMessagesStream');
+            if (!stream) return;
+
+            var row = document.createElement('div');
+            row.className = 'ms-msg-row ' + (role === 'user' ? 'ms-row-user' : 'ms-row-assistant');
+
+            if (role === 'assistant') {
+                var innerHtml = '<div class="ms-msg-avatar"><img src="/static/images/ptit_logo.png" alt="P-Sieve"></div>' +
+                    '<div class="ms-msg-bubble ms-bubble-assistant">' +
+                    '<div class="ms-msg-sender">Trợ lý AI P-Sieve (Học viện PTIT)</div>';
+
+                // 1. Triage Banner
+                if (metadata && metadata.triage_level === 'CRITICAL') {
+                    innerHtml += '<div class="ms-triage-card ms-triage-critical">' +
+                        '<span class="ms-triage-tag">[BÁO ĐỘNG ĐỎ]</span>' +
+                        '<span class="ms-triage-title">' + (metadata.triage_title || 'KÍCH HOẠT QUY TRÌNH 15 PHÚT VÀNG') + '</span>' +
+                        '</div>';
+                } else if (metadata && metadata.triage_level === 'WARNING') {
+                    innerHtml += '<div class="ms-triage-card ms-triage-warning">' +
+                        '<span class="ms-triage-tag">[CẢNH BÁO NGUY CƠ]</span>' +
+                        '<span class="ms-triage-title">' + (metadata.triage_title || 'PHÒNG NGỪA RÒ RỈ DỮ LIỆU') + '</span>' +
+                        '</div>';
+                }
+
+                // 2. Scan Telemetry Box
+                if (metadata && metadata.scan_telemetry) {
+                    var tel = metadata.scan_telemetry;
+                    var isScam = tel.is_scam || (tel.risk_score >= 70);
+                    var boxClass = isScam ? 'ms-telemetry-box ms-scam-alert' : 'ms-telemetry-box';
+                    var statusTag = isScam ? '[LỪA ĐẢO NGUY HIỂM]' : (tel.risk_score >= 35 ? '[NGHI VẤN CAO]' : '[AN TOÀN / ĐỘ TIN CẬY CAO]');
+                    innerHtml += '<div class="' + boxClass + '">' +
+                        '<div class="ms-telemetry-title">GIÁM ĐỊNH P-SIEVE ENGINE: ' + (tel.risk_score || 0) + '/100 ' + statusTag + '</div>';
+                    if (tel.target) {
+                        innerHtml += '<div class="ms-telemetry-url">' + tel.target + '</div>';
+                    }
+                    if (tel.reasons && tel.reasons.length > 0) {
+                        innerHtml += '<ul class="ms-telemetry-reasons">';
+                        for (var r = 0; r < tel.reasons.length; r++) {
+                            innerHtml += '<li>' + tel.reasons[r] + '</li>';
+                        }
+                        innerHtml += '</ul>';
+                    }
+                    innerHtml += '</div>';
+                }
+
+                // 3. Noi dung van ban hoi thoai
+                innerHtml += '<div class="ms-msg-text">' + formatMsMarkdown(text) + '</div>';
+
+                // 4. Cluster cac Nut hanh dong mot cham
+                if (metadata && metadata.quick_actions && metadata.quick_actions.length > 0) {
+                    innerHtml += '<div class="ms-actions-cluster">';
+                    for (var a = 0; a < metadata.quick_actions.length; a++) {
+                        var act = metadata.quick_actions[a];
+                        innerHtml += '<button type="button" class="ms-action-button" onclick="executeMsAction(\'' + act.action + '\')">' +
+                            act.label + '</button>';
+                    }
+                    innerHtml += '</div>';
+                }
+
+                innerHtml += '</div>';
+                row.innerHTML = innerHtml;
+            } else {
+                var escapedText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                row.innerHTML = '<div class="ms-msg-bubble ms-bubble-user">' +
+                    '<div class="ms-msg-text">' + escapedText + '</div>' +
+                    '</div>';
+            }
+
+            stream.appendChild(row);
+            scrollMsToBottom();
+        }
+
+        function executeMsAction(actionKey) {
+            openMessengerChat();
+            if (actionKey === 'show_bank_hotlines') {
+                appendMsCustomCard(
+                    'DANH BẠ HOTLINE KHÓA THẺ NGÂN HÀNG 24/7',
+                    '<div class="ms-hotline-grid">' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">Vietcombank</span><a href="tel:1900545413" class="ms-hotline-num">1900 545413</a><span class="ms-hotline-desc">Phím 1: Khóa thẻ khẩn cấp</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">Techcombank</span><a href="tel:1800588822" class="ms-hotline-num">1800 588822</a><span class="ms-hotline-desc">Miễn cước 24/7</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">BIDV</span><a href="tel:19009247" class="ms-hotline-num">1900 9247</a><span class="ms-hotline-desc">Khóa SmartBanking 24/7</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">MBBank</span><a href="tel:1900545426" class="ms-hotline-num">1900 545426</a><span class="ms-hotline-desc">Khóa tự động qua tổng đài</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">Agribank</span><a href="tel:1900558818" class="ms-hotline-num">1900 558818</a><span class="ms-hotline-desc">Hỗ trợ khẩn cấp 24/7</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">VietinBank</span><a href="tel:1900558868" class="ms-hotline-num">1900 558868</a><span class="ms-hotline-desc">Phím 1 báo mất thẻ</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">VPBank</span><a href="tel:1900545415" class="ms-hotline-num">1900 545415</a><span class="ms-hotline-desc">Sự cố gian lận tài khoản</span></div>' +
+                    '<div class="ms-hotline-item"><span class="ms-hotline-name">ACB</span><a href="tel:1900545486" class="ms-hotline-num">1900 545486</a><span class="ms-hotline-desc">Khóa dịch vụ e-Banking</span></div>' +
+                    '</div>'
+                );
+            } else if (actionKey === 'show_apk_guide') {
+                appendMsCustomCard(
+                    'QUY TRÌNH XỬ LÝ KHI LỠ CÀI FILE .APK MÃ ĐỘC',
+                    '<ul>' +
+                    '<li><strong>Bước 1: Ngắt kết nối ngay</strong> — Bật ngay Chế độ máy bay (Airplane Mode) hoặc tắt nguồn máy để ngắt kênh điều khiển từ xa (C2 Server).</li>' +
+                    '<li><strong>Bước 2: Tháo thẻ SIM</strong> — Chuyển thẻ SIM sang điện thoại khác an toàn để kẻ gian không thể chặn mã OTP tin nhắn SMS.</li>' +
+                    '<li><strong>Bước 3: Đổi mật khẩu ngân hàng</strong> — Dùng máy tính hoặc điện thoại khác để đổi ngay mật khẩu e-Banking và Smart OTP.</li>' +
+                    '<li><strong>Bước 4: Khôi phục cài đặt gốc</strong> — Khởi động vào Safe Mode hoặc khôi phục cài đặt gốc (Factory Reset) điện thoại bị nhiễm mã độc.</li>' +
+                    '</ul>'
+                );
+            } else if (actionKey === 'show_police_guide' || actionKey === 'show_golden_15m') {
+                appendMsCustomCard(
+                    'QUY TRÌNH 15 PHÚT VÀNG & HỒ SƠ TỐ GIÁC CÔNG AN',
+                    '<ul>' +
+                    '<li><strong>1. Khóa tài khoản/thẻ:</strong> Gọi tổng đài ngân hàng để phong tỏa tài khoản nguồn và yêu cầu phát lệnh tra soát giao dịch sang ngân hàng thụ hưởng.</li>' +
+                    '<li><strong>2. Chụp lưu bằng chứng số:</strong> Lưu ảnh sao kê biến động số dư, mã giao dịch FT, số tài khoản đích, nhật ký cuộc gọi và toàn bộ tin nhắn đe dọa/dụ dỗ.</li>' +
+                    '<li><strong>3. Nộp đơn tố giác:</strong> Mang chứng cứ tới Công an xã/phường nơi cư trú hoặc gửi phản ánh lên Cổng Cảnh báo Không gian mạng: <code>canhbao.khonggianmang.vn</code>.</li>' +
+                    '<li><strong>4. Liên hệ Đường dây nóng A05:</strong> 069 2348560 (Cục An ninh mạng và Phòng chống tội phạm CNC).</li>' +
+                    '</ul>'
+                );
+            } else if (actionKey === 'show_cyber_police') {
+                appendMsCustomCard(
+                    'ĐƯỜNG DÂY NÓNG CƠ QUAN AN NINH MẠNG',
+                    '<ul>' +
+                    '<li><strong>Cục An ninh mạng A05 (Bộ Công an):</strong> 069 2348560</li>' +
+                    '<li><strong>Cổng Cảnh báo An toàn thông tin:</strong> <code>canhbao.khonggianmang.vn</code></li>' +
+                    '<li><strong>VNCERT/CC (Bộ TT&TT):</strong> 086 9100311</li>' +
+                    '</ul>'
+                );
+            } else if (actionKey === 'show_security_steps') {
+                appendMsCustomCard(
+                    'BIỆN PHÁP BẢO VỆ TÀI KHOẢN KHẨN CẤP',
+                    '<ul>' +
+                    '<li><strong>1. Đổi mật khẩu ngay lập tức:</strong> Truy cập ứng dụng chính thức để đổi mật khẩu và bật xác thực 2 bước (2FA).</li>' +
+                    '<li><strong>2. Đăng xuất khỏi mọi thiết bị:</strong> Chọn "Đăng xuất khỏi tất cả các phiên đăng nhập khác" trong cài đặt bảo mật.</li>' +
+                    '<li><strong>3. Quét mã độc:</strong> Dùng phần mềm diệt virus kiểm tra thiết bị nếu vừa tải file lạ.</li>' +
+                    '</ul>'
+                );
+            } else if (actionKey === 'check_account_prompt') {
+                var input = document.getElementById('msUserInput');
+                if (input) {
+                    input.value = 'Kiểm tra giúp tôi số tài khoản này có dấu hiệu lừa đảo không: ';
+                    input.focus();
+                }
+            } else if (actionKey === 'report_website') {
+                window.location.href = '/report';
+            }
+        }
+
+        function appendMsCustomCard(title, bodyHtml) {
+            var stream = document.getElementById('msMessagesStream');
+            if (!stream) return;
+            var row = document.createElement('div');
+            row.className = 'ms-msg-row ms-row-assistant';
+            row.innerHTML = '<div class="ms-msg-avatar"><img src="/static/images/ptit_logo.png" alt="P-Sieve"></div>' +
+                '<div class="ms-msg-bubble ms-bubble-assistant">' +
+                '<div class="ms-hotline-card">' +
+                '<div class="ms-hotline-header">' + title + '</div>' +
+                bodyHtml +
+                '</div></div>';
+            stream.appendChild(row);
+            scrollMsToBottom();
+        }
+
+        function handleMsKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('msChatForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }
+        }
+
+        function sendMsQuickPrompt(promptText) {
+            openMessengerChat();
+            var input = document.getElementById('msUserInput');
+            if (input) {
+                input.value = promptText;
+            }
+            document.getElementById('msChatForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+
+        function handleMsSubmit(e) {
+            e.preventDefault();
+            var input = document.getElementById('msUserInput');
+            var sendBtn = document.getElementById('msSendBtn');
+            var typing = document.getElementById('msTypingIndicator');
+            var text = (input ? input.value : '').trim();
+
+            if (!text) return;
+
+            appendMsMessage('user', text);
+            input.value = '';
+            input.style.height = 'auto';
+
+            if (sendBtn) sendBtn.disabled = true;
+            if (typing) typing.style.display = 'flex';
+            scrollMsToBottom();
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: text,
+                    history: msConversationHistory
+                })
+            })
+            .then(function(res) {
+                return res.json();
+            })
+            .then(function(data) {
+                if (typing) typing.style.display = 'none';
+                if (sendBtn) sendBtn.disabled = false;
+
+                var reply = data.response || 'Hệ thống đang bận. Vui lòng kiểm tra lại đường link hoặc liên hệ cơ quan an ninh.';
+                appendMsMessage('assistant', reply, data);
+
+                msConversationHistory.push({ role: 'user', content: text });
+                msConversationHistory.push({ role: 'assistant', content: reply });
+                if (msConversationHistory.length > 8) {
+                    msConversationHistory = msConversationHistory.slice(-8);
+                }
+            })
+            .catch(function(err) {
+                if (typing) typing.style.display = 'none';
+                if (sendBtn) sendBtn.disabled = false;
+                appendMsMessage('assistant', 'LỖI KẾT NỐI: Không thể gửi tin nhắn. Khuyến cáo khẩn: Tuyệt đối không chuyển tiền hoặc gửi mã OTP cho bất kỳ ai.', {
+                    triage_level: 'CRITICAL',
+                    triage_title: 'MẤT KẾT NỐI - CẢNH BÁO BẢO VỆ TÀI CHÍNH'
+                });
+            });
+        }
+
+        // Tự động mở chat nếu URL có ?open_chat=1
+        document.addEventListener('DOMContentLoaded', function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('open_chat') === '1' || urlParams.get('chat') === '1') {
+                openMessengerChat();
+            }
+        });
+    </script>
+</body>
+</html>
+

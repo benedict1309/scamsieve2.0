@@ -1,0 +1,11 @@
+phone_number,prefix_type,country_code,category,note,source
+02444582186,domestic_landline,+024,bank_impersonation,Cố định Hà Nội - Mạo danh nhân viên ngân hàng/sàn TMDT thông báo trúng thưởng hoặc nâng hạn mức tín dụng để lừa lấy OTP,truecaller-icheck-user-report-2026
+02899995555,domestic_landline,+028,loan_scam,Cố định TP.HCM - Nháy máy liên tục hoặc giả danh tư vấn cho vay trả góp hỗ trợ tài chính tín dụng đen,truecaller-icheck-user-report-2026
+02488899296,domestic_landline,+024,utility_impersonation,Cố định Hà Nội - Mạo danh nhân viên điện lực/nhà mạng thông báo nợ cước hoặc sắp khóa dịch vụ để yêu cầu chuyển khoản,truecaller-icheck-user-report-2026
+02888825666,domestic_landline,+028,authority_impersonation,Cố định TP.HCM - Giả danh cơ quan chức năng/tòa án dọa dẫm có vi phạm hành chính phạt nguội giao thông,truecaller-icheck-user-report-2026
+0901800000,domestic_mobile,+84,sim_swap_scam,Di động - Cuộc gọi rác/lừa đảo giả mạo tổng đài chăm sóc khách hàng yêu cầu nâng cấp SIM 4G/5G lên eSIM nhằm chiếm đoạt quyền kiểm soát SIM,truecaller-icheck-user-report-2026
+0838888888,domestic_mobile,+84,shipper_impersonation,Di động - Giả danh đơn vị giao hàng Shipper báo có đơn COD yêu cầu chuyển khoản trước hoặc nhấn vào liên kết lạ để nhận hàng,truecaller-icheck-user-report-2026
+0582222222,domestic_mobile,+84,job_scam,Di động - Mạo danh tư vấn tuyển dụng việc nhẹ lương cao mời chào làm cộng tác viên chốt đơn online hoặc xem video TikTok kiếm tiền,truecaller-icheck-user-report-2026
+0931000000,domestic_mobile,+84,prize_scam,Di động - Giả danh nhân viên tài chính gọi điện mời nhận quà miễn phí nhưng yêu cầu trả phí vận chuyển Ship COD đắt gấp nhiều lần giá trị thực,truecaller-icheck-user-report-2026
+02499950012,domestic_landline,+024,robocall_vas,Cố định Hà Nội - Nháy máy 1-2 giây ép người dùng gọi lại để cước tự động kết nối dịch vụ VAS giá cao,truecaller-icheck-user-report-2026
+02873000000,domestic_landline,+028,investment_scam,Cố định TP.HCM - Cuộc gọi tự động Robocall phát ghi âm sẵn mời chào đầu tư chứng khoán tiền ảo sàn Forex cờ bạc,truecaller-icheck-user-report-2026

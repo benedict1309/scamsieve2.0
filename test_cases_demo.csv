@@ -1,0 +1,37 @@
+Loai,Ma,Kich_Ban,Du_Lieu_Test,Ket_Qua_Mong_Doi
+SMS,SMS-01,Ma OTP ngan hang that,Vietcombank: Ma OTP cua Quy khach la 849201 de xac thuc dang nhap eBank. KHONG chia se ma nay cho bat ky ai ke ca nhan vien ngan hang.,AN TOAN (Rui ro < 5%)
+SMS,SMS-02,Bien dong so du Techcombank,Techcombank: Bien dong so du +2500000 VND vao 14:30 ngay 09/10/2026 tai POS Vinmart. So du kha dung: 15820000 VND.,AN TOAN (Rui ro < 7%)
+SMS,SMS-03,Khuyen mai Viettel hop le,[Viettel] Quy khach duoc tang 50% gia tri the nap khi nap tien qua Viettel Money truoc 24h ngay mai. Chi tiet soan KM gui 191.,AN TOAN (Rui ro < 5%)
+SMS,SMS-04,Shipper giao hang COD,Giao Hang Tiet Kiem: Don hang #89123 dang duoc shipper Nguyen Van B (0987123456) giao den ban. Tien thu ho COD: 145000d.,AN TOAN (Rui ro < 8%)
+SMS,SMS-05,Canh bao tiet kiem dien EVN,EVN Ha Noi kinh bao: Tiet kiem dien la tiet kiem tien. Quy khach vui long tat cac thiet bi dien khong can thiet trong gio cao diem.,AN TOAN (Rui ro < 5%)
+SMS,SMS-06,Ma xac thuc Google,Google: Ma xac minh tai khoan Google cua ban la 629104. Khong chia se ma xac minh voi bat ky ai.,AN TOAN (Rui ro < 5%)
+SMS,SMS-07,Tin nhan trao doi binh thuong,Toi nay 7h ca nhom hen gap o quan cafe gan truong nhe nho mang theo laptop de lam bai tap lon.,AN TOAN (Rui ro 0%)
+SMS,SMS-08,Mao danh Vietcombank doa khoa the,Vietcombank tran trong thong bao: Tai khoan cua ban bi tam khoa do vi pham bao mat. Vui long dang nhap ngay tai http://vietcombank-login-ebank.xyz de xac thuc trong 24h.,LUA DAO (Rui ro > 95%)
+SMS,SMS-09,Gia danh Cong an dieu tra rua tien,Chao anh/chi toi la can bo Cuc Canh sat Dieu tra toi pham Bo Cong An. Anh/chi dang lien quan den du an rua tien xuyen quoc gia yeu cau co mat tai co quan hoac chuyen tien vao tai khoan tam giu de chung minh trong sach.,LUA DAO (Rui ro > 90%)
+SMS,SMS-10,Tuyen dung nhiem vu Shopee nap tien,Tuyen dung Shopee: Lam viec online tai nha xem video danh gia san pham nhan luong 300k - 800k/ngay. Khong can kinh nghiem thanh toan ngay qua tai khoan ngan hang. Inbox Zalo 0912345678.,LUA DAO (Rui ro > 85%)
+SMS,SMS-11,Chen ky tu Cyrillic ne kiem duyet,C.o.n.g A.n T.P t.r.i.e.u t.a.p gap lien quan vu an hinh su. Yeu cau c.k gap vao s.t.k tam giu de phuc vu dieu tra.,LUA DAO (De-obfuscation)
+SMS,SMS-12,Trung thuong xe may SH tri an,Chuc mung Quy khach may man trung thuong 01 xe may SH 150i tu chuong trinh tri an khach hang. Truy cap ngay http://quatang-triandacbiet.xyz de nhan giai.,LUA DAO (Rui ro > 95%)
+SMS,SMS-13,De doa khoa SIM vien thong,Tong dai VNP-CSKH: Thue bao cua quy khach se bi khoa hai chieu trong 2 gio toi do chua chuan hoa thong tin. Lien he ngay hotline 0247300123 de duoc huong dan mo khoa.,LUA DAO / NGUY CO CAO
+URL,URL-01,Cong Dich vu cong Quoc gia,https://dichvucong.gov.vn,100/100 AN TOAN
+URL,URL-02,Ngan hang Vietcombank that,https://www.vietcombank.com.vn,100/100 AN TOAN
+URL,URL-03,Ngan hang Techcombank that,https://techcombank.com,100/100 AN TOAN
+URL,URL-04,San TMDT Shopee that,https://shopee.vn,100/100 AN TOAN
+URL,URL-05,Bao VnExpress chinh thong,https://vnexpress.net,100/100 AN TOAN
+URL,URL-06,Trang tim kiem Google,https://www.google.com,100/100 AN TOAN
+URL,URL-07,Hoan doi chu cai Typosquatting,http://veitcombank.net/login,LUA DAO / TYPOSQUATTING
+URL,URL-08,Bo sot chu cai Omission Squatting,http://techcombnk.com/ebank,LUA DAO / TYPOSQUATTING
+URL,URL-09,Khu dau gach noi Hyphenation,https://viet-com-bank.xyz/portal,LUA DAO / TYPOSQUATTING
+URL,URL-10,Thay the thi giac rn thanh m,http://vietcornbank-ebank.xyz/otp,LUA DAO / TYPOSQUATTING
+URL,URL-11,Danh sach den ma doc Threat Intel,https://www.musictoyourhome.com,LUA DAO / BLACKLIST
+URL,URL-12,Bay chuyen huong Open Redirect,https://google.com/url?q=http://scam-bank.top,CANH BAO NGUY HIEM
+URL,URL-13,Tien to danh lua Credential @,https://vietcombank.com.vn@scam-server.xyz/login,LUA DAO / NGUY CO CAO
+URL,URL-14,Dung dia chi IP truc tiep,http://185.220.101.5/ebank,CANH BAO NGUY HIEM
+TEL,TEL-01,Tong dai CSKH Viettel mien cuoc,18008098,AN TOAN (Dau so 1800)
+TEL,TEL-02,Hotline Vietcombank chinh thuc,1900545413,AN TOAN (Dau so 1900)
+TEL,TEL-03,So co dinh noi dia Ha Noi,02438255555,AN TOAN (Ma vung 024)
+TEL,TEL-04,Thue bao di dong ca nhan,0988123456,AN TOAN (VN_MOBILE)
+TEL,TEL-05,Dau so ve tinh Inmarsat hut cuoc,+88216500123,CANH BAO NGUY HIEM
+TEL,TEL-06,Dau so quoc te chau Phi Somailia,+25299123456,CANH BAO DAU SO LA
+TEL,TEL-07,Gia mao so 0 bang chu O,O987123456,TU DONG CHUAN HOA O -> 0
+TEL,TEL-08,So bi to cao lua dao,(So da nhap trong trang Bao cao),DA BI TO CAO LUA DAO
+

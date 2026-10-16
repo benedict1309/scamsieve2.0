@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "P-Sieve - Giám Định An Toàn & Chống Lừa Đảo",
+  "version": "1.0.0",
+  "description": "Tiện ích giám định an ninh mạng, phát hiện lừa đảo, website giả mạo (phishing) và số điện thoại rác theo thời gian thực.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "P-Sieve - Kiểm tra an toàn"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "scripting",
+    "notifications",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://127.0.0.1:8001/*",
+    "http://localhost:8000/*",
+    "http://localhost:8001/*",
+    "http://127.0.0.1/*",
+    "http://localhost/*",
+    "<all_urls>"
+  ]
+}
+

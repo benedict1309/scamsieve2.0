@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P-Sieve - Kiểm tra an toàn Web</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="ext-container">
+
+    <!-- 1. HEADER -->
+    <header class="ext-header">
+      <div class="header-brand">
+        <span class="brand-title">P-SIEVE</span>
+        <span class="brand-sub">KIỂM TRA AN TOÀN LIÊN KẾT &amp; WEB</span>
+      </div>
+      <div class="header-badge">v3.0</div>
+    </header>
+
+    <!-- 2. TAB STRIP -->
+    <div class="active-tab-strip">
+      <span class="tab-label">TRANG HIỆN TẠI:</span>
+      <span id="current-hostname" class="tab-host">Đang xác định...</span>
+    </div>
+
+    <!-- 3. GAUGE SECTION -->
+    <div class="gauge-section">
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 130 130">
+          <circle class="gauge-bg" cx="65" cy="65" r="52" />
+          <circle id="gauge-progress" class="gauge-progress" cx="65" cy="65" r="52" />
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-inner">
+            <span id="score-number" class="gauge-num">--%</span>
+            <span class="gauge-label">ĐIỂM AN TOÀN</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="verdict-heading" class="verdict-heading">Đang phân tích tiêu chí...</div>
+
+      <div id="benchmark-pill" class="benchmark-pill">
+        Tốc độ phản hồi: Đang đo kiểm...
+      </div>
+
+      <button type="button" id="btn-toggle-details" class="btn-toggle-details">
+        Xem danh sách tiêu chí
+      </button>
+    </div>
+
+    <!-- 4. CRITERIA CLOUD -->
+    <div id="criteria-cloud" class="criteria-cloud" style="display: none;">
+      <div class="criteria-header">
+        <span class="criteria-title">21 TIÊU CHÍ BẢO MẬT</span>
+      </div>
+      <div class="criteria-badges-container" id="criteria-badges-container">
+        <!-- Rendered động bởi popup.js -->
+        <span class="badge-pill pass">Địa chỉ IP</span>
+        <span class="badge-pill pass">Độ dài URL</span>
+        <span class="badge-pill pass">Link rút gọn</span>
+        <span class="badge-pill pass">Ký tự @</span>
+        <span class="badge-pill pass">Chuyển hướng //</span>
+        <span class="badge-pill pass">Dấu gạch nối</span>
+        <span class="badge-pill pass">Tên miền con</span>
+        <span class="badge-pill pass">HTTPS</span>
+        <span class="badge-pill pass">Favicon</span>
+        <span class="badge-pill pass">Cổng mạng</span>
+        <span class="badge-pill pass">HTTPS trong miền</span>
+        <span class="badge-pill pass">Tài nguyên ngoài</span>
+        <span class="badge-pill pass">Liên kết trang</span>
+        <span class="badge-pill pass">Mã script ngoài</span>
+        <span class="badge-pill pass">Xử lý biểu mẫu</span>
+        <span class="badge-pill pass">Gửi qua mailto</span>
+        <span class="badge-pill pass">Khung ẩn iFrame</span>
+      </div>
+
+      <div id="criterion-detail-box" class="criterion-detail-box" style="display: none;">
+        <div class="detail-header">
+          <strong id="detail-name">Chi tiết tiêu chí</strong>
+          <button type="button" id="btn-close-detail" class="btn-close-detail">Đóng</button>
+        </div>
+        <p id="detail-text" class="detail-text"></p>
+      </div>
+    </div>
+
+    <!-- 5. QUICK ACTIONS -->
+    <div class="quick-action-row">
+      <button type="button" id="btn-recheck" class="btn-action btn-outline">Kiểm tra lại</button>
+      <button type="button" id="btn-deep-ai" class="btn-action btn-primary">Đánh giá chi tiết</button>
+    </div>
+
+    <!-- 6. DETAILED ASSESSMENT SECTION -->
+    <div id="ai-result-section" class="ai-result-section" style="display: none;">
+      <div class="ai-header">
+        <div class="ai-title-block">
+          <span class="ai-badge">BÁO CÁO PHÂN TÍCH</span>
+          <strong class="ai-brand-title">KẾT QUẢ ĐÁNH GIÁ BẢO MẬT</strong>
+        </div>
+        <span id="ai-verdict-tag" class="ai-tag">AN TOÀN</span>
+      </div>
+
+      <div class="ai-summary-box">
+        <div class="summary-label">KẾT LUẬN:</div>
+        <p id="ai-summary" class="ai-summary">Đang tiến hành đánh giá...</p>
+      </div>
+
+      <div class="dossier-grid">
+        <div class="dossier-card">
+          <div class="pillar-header">
+            <span class="pillar-tag">MỤC 1</span>
+            <span class="pillar-title">Danh tính tên miền</span>
+          </div>
+          <div id="pillar-identity" class="pillar-content">Đang kiểm tra...</div>
+        </div>
+
+        <div class="dossier-card">
+          <div class="pillar-header">
+            <span class="pillar-tag">MỤC 2</span>
+            <span class="pillar-title">Thông số kỹ thuật</span>
+          </div>
+          <div id="pillar-technical" class="pillar-content">Đang kiểm tra...</div>
+        </div>
+
+        <div class="dossier-card">
+          <div class="pillar-header">
+            <span class="pillar-tag">MỤC 3</span>
+            <span class="pillar-title">Hành vi trang web</span>
+          </div>
+          <div id="pillar-behavior" class="pillar-content">Đang kiểm tra...</div>
+        </div>
+
+        <div class="dossier-card highlight-pillar">
+          <div class="pillar-header">
+            <span class="pillar-tag">MỤC 4</span>
+            <span class="pillar-title">Khuyến nghị xử lý</span>
+          </div>
+          <div id="pillar-guidance" class="pillar-content">Đang kiểm tra...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. MANUAL INSPECTOR -->
+    <div class="manual-section">
+      <div class="manual-label">KIỂM TRA THỦ CÔNG</div>
+      <div class="manual-row">
+        <input type="text" id="manual-input" class="manual-input" placeholder="Dán liên kết hoặc tin nhắn cần kiểm tra...">
+        <button type="button" id="btn-manual-scan" class="btn-manual-scan">Kiểm tra</button>
+      </div>
+      <div id="manual-result" class="manual-result" style="display: none;"></div>
+    </div>
+
+    <!-- 8. FOOTER -->
+    <footer class="ext-footer">
+      <a href="http://127.0.0.1:8001" target="_blank" class="footer-link">Mở nền tảng P-Sieve Web</a>
+    </footer>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

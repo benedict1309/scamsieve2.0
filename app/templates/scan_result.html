@@ -1,0 +1,702 @@
+{% extends "base.html" %}
+
+{% block title %}Kết quả kiểm tra - P-Sieve{% endblock %}
+
+{% block content %}
+<section class="result-page">
+    <!-- HANG TREN: 2 KHOI HINH TRON DIEM SO SONG SONG (DANH GIA TINH & MUC DO RUI RO) -->
+    <div class="risk-duo-grid {% if not (ai_result and ai_result.active) %}single-card{% endif %}">
+        
+        <!-- KHOI 1: DANH GIA TONG HOP THEO QUY TAC HE THONG -->
+        <div class="risk-card-item risk-{{ risk_level|lower }}">
+            <div class="risk-card-top">
+                <span class="risk-card-badge">Đánh giá hệ thống</span>
+                <span class="risk-card-title">Điểm chuẩn hóa</span>
+            </div>
+            <div class="risk-card-main">
+                <div class="risk-score-circle-wrap">
+                    <svg class="score-circle-svg" viewBox="0 0 120 120">
+                        <circle class="score-circle-bg" cx="60" cy="60" r="48" stroke-width="9"></circle>
+                        <circle id="score-circle-bar-static" class="score-circle-bar" cx="60" cy="60" r="48" stroke-width="9"></circle>
+                    </svg>
+                    <div class="score-circle-content">
+                        <span id="animated-score-static" class="score-circle-number">0</span>
+                        <span class="score-circle-total">/100</span>
+                    </div>
+                </div>
+                <div class="risk-card-desc">
+                    <strong class="risk-status-heading">{{ risk_label }}</strong>
+                    <p>{{ risk_advice }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KHOI 2: MUC DO RUI RO DU LIEU (HOC MAY & NGU NGHIA) -->
+        {% if ai_result and ai_result.active %}
+        <div class="risk-card-item risk-{{ risk_level|lower }}">
+            <div class="risk-card-top">
+                <span class="risk-card-badge">Mô hình dữ liệu</span>
+                <span class="risk-card-title">Xác suất rủi ro</span>
+            </div>
+            <div class="risk-card-main">
+                <div class="risk-score-circle-wrap">
+                    <svg class="score-circle-svg" viewBox="0 0 120 120">
+                        <circle class="score-circle-bg" cx="60" cy="60" r="48" stroke-width="9"></circle>
+                        <circle id="score-circle-bar-dynamic" class="score-circle-bar" cx="60" cy="60" r="48" stroke-width="9"></circle>
+                    </svg>
+                    <div class="score-circle-content">
+                        <span id="animated-score-dynamic" class="score-circle-number">0</span>
+                        <span class="score-circle-total">%</span>
+                    </div>
+                </div>
+                <div class="risk-card-desc">
+                    <strong class="risk-status-heading">{{ ai_result.status_label }}</strong>
+                    <p>{{ ai_result.summary }}</p>
+                    {% if ai_result.has_obfuscation %}
+                    <div class="obfuscation-notice">Phát hiện ký tự ẩn hoặc kỹ thuật ngụy trang né tránh kiểm duyệt.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- BANNER UNG CUU KHAN CAP KHI PHAT HIEN NGUY HIEM -->
+    {% if risk_level == 'HIGH' or (ai_result and ai_result.is_scam) %}
+    <div class="emergency-alert-banner">
+        <div class="emergency-alert-content">
+            <strong class="emergency-alert-title">CANH BAO NGUY HIEM - DANG CO DAU HIEU LUA DAO</strong>
+            <p class="emergency-alert-desc">Nếu bạn hoặc người thân đã lỡ chuyển tiền, cung cấp mã xác thực OTP hoặc cài đặt ứng dụng theo yêu cầu này, hãy kích hoạt quy trình ứng cứu khẩn cấp ngay để phong tỏa tài sản.</p>
+        </div>
+        <button type="button" class="btn btn-emergency-banner" onclick="openEmergencyModal()">
+            Ứng cứu khẩn cấp ngay
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Khoi hien thi ket qua giam dinh hinh anh (neu la Quet hinh anh) -->
+    {% if image_preview %}
+    <div class="image-result-card {% if risk_level == 'LOW' %}image-safe{% elif risk_level == 'MEDIUM' %}image-medium{% else %}image-alert{% endif %}">
+        <div class="image-result-grid">
+            <div class="image-col-preview">
+                <span class="preview-badge">Ảnh chụp đã phân tích</span>
+                <img src="{{ image_preview }}" alt="Ảnh chụp màn hình đã phân tích" class="scanned-image-thumb">
+            </div>
+            <div class="image-col-details">
+                <div class="vision-header">
+                    <h3>Giám định thị giác</h3>
+                    {% if vision_result and vision_result.category %}
+                    <span class="vision-tag">{{ vision_result.category }}</span>
+                    {% endif %}
+                </div>
+
+                {% if visual_evidence %}
+                <div class="visual-evidence-box">
+                    <strong>Các dấu hiệu phát hiện trong ảnh:</strong>
+                    <ul>
+                        {% for ev in visual_evidence %}
+                        <li>{{ ev }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if vision_result and vision_result.recommendation %}
+                <div class="vision-advice-box">
+                    <strong>Khuyến nghị an toàn:</strong>
+                    <p>{{ vision_result.recommendation }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- KHỐI THÔNG TIN NỘI DUNG ĐÃ KIỂM TRA & NHẬN DIỆN SỐ ĐIỆN THOẠI -->
+    <div class="inspected-content-card">
+        <div class="inspected-content-header">
+            {% if input_type == "phone" and not (phone_info and phone_info.get('detected_in_content')) %}
+                <span class="inspected-content-label">Số điện thoại tra cứu:</span>
+                <div class="phone-standalone-row">
+                    <strong class="sender-val">{{ phone_info.normalized or phone_info.sender or content }}</strong>
+                    {% if phone_info %}
+                        {% if phone_info.type == "VN_MOBILE" %}
+                        <span class="sender-tag tag-mobile">Thuê bao di động Việt Nam</span>
+                        {% elif phone_info.type == "VN_LANDLINE" %}
+                        <span class="sender-tag tag-landline">Số cố định nội địa</span>
+                        {% elif phone_info.type == "VN_HOTLINE" %}
+                        <span class="sender-tag tag-hotline">Tổng đài dịch vụ (1900/1800)</span>
+                        {% elif phone_info.type == "BRANDNAME" %}
+                        <span class="sender-tag tag-brand">Tên định danh Brandname</span>
+                        {% elif phone_info.type == "HIGH_RISK_INTERNATIONAL" %}
+                        <span class="sender-tag tag-danger">Cảnh báo đầu số quốc tế rủi ro</span>
+                        {% else %}
+                        <span class="sender-tag">Đầu số chưa xác định</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% elif input_type == "url" %}
+                <span class="inspected-content-label">Đường dẫn liên kết (URL / Web) đã kiểm tra:</span>
+                <div class="inspected-content-text">{{ content }}</div>
+            {% elif input_type == "email" %}
+                <span class="inspected-content-label">Địa chỉ thư điện tử (Email) đã kiểm tra:</span>
+                <div class="inspected-content-text">{{ content }}</div>
+            {% elif input_type == "image" %}
+                <span class="inspected-content-label">Văn bản trích xuất từ hình ảnh:</span>
+                <div class="inspected-content-text">{{ content }}</div>
+            {% else %}
+                <span class="inspected-content-label">Nội dung tin nhắn / văn bản đã kiểm tra:</span>
+                <div class="inspected-content-text">{{ content }}</div>
+            {% endif %}
+        </div>
+
+        <!-- NẾU CÓ SỐ ĐIỆN THOẠI TRÍCH XUẤT ĐƯỢC TỪ TRONG NỘI DUNG / ẢNH -->
+        {% if phone_info and phone_info.get('detected_in_content') %}
+        <div class="detected-phone-strip">
+            <span class="detected-phone-label">Số điện thoại phát hiện trong nội dung:</span>
+            <strong class="detected-phone-val">{{ phone_info.target_number or phone_info.normalized or phone_info.sender }}</strong>
+            {% if phone_info.type == "VN_MOBILE" %}
+            <span class="sender-tag tag-mobile">Thuê bao di động Việt Nam</span>
+            {% elif phone_info.type == "VN_LANDLINE" %}
+            <span class="sender-tag tag-landline">Số cố định nội địa</span>
+            {% elif phone_info.type == "VN_HOTLINE" %}
+            <span class="sender-tag tag-hotline">Tổng đài dịch vụ (1900/1800)</span>
+            {% elif phone_info.type == "BRANDNAME" %}
+            <span class="sender-tag tag-brand">Tên định danh Brandname</span>
+            {% elif phone_info.type == "HIGH_RISK_INTERNATIONAL" %}
+            <span class="sender-tag tag-danger">Cảnh báo đầu số quốc tế rủi ro</span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if phone_info and phone_info.notes %}
+        <div class="sender-notes">
+            {% for note in phone_info.notes %}
+            <p class="sender-note-item">{{ note }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- CÁC CẢNH BÁO MẠO DANH & ĐIỀU HƯỚNG TÊN MIỀN (NẾU PHÁT HIỆN DẤU HIỆU TẤN CÔNG) -->
+    {% if url_forensics and (url_forensics.is_brand_impersonation or url_forensics.has_credential_spoofing or url_forensics.is_open_redirect or (url_forensics.is_shortened and url_forensics.resolved_url)) %}
+    <div class="forensics-alerts-container" style="margin-top: 1rem;">
+        {% if url_forensics.is_brand_impersonation %}
+        <div class="forensics-alert-box alert-brand-hijack">
+            <strong>Phát hiện hành vi mạo danh thương hiệu ({{ url_forensics.impersonation_type }}):</strong>
+            <p>{{ url_forensics.impersonation_detail }}</p>
+        </div>
+        {% endif %}
+
+        {% if url_forensics.has_credential_spoofing %}
+        <div class="forensics-alert-box alert-brand-hijack">
+            <strong>Cảnh báo Credential Spoofing (@):</strong>
+            <p>Liên kết ngụy trang tiền tố '{{ url_forensics.spoofed_credential }}' nhằm đánh lừa người dùng, nhưng trình duyệt thực tế sẽ kết nối tới máy chủ '{{ url_forensics.netloc }}'.</p>
+        </div>
+        {% endif %}
+
+        {% if url_forensics.is_open_redirect %}
+        <div class="forensics-alert-box alert-brand-hijack">
+            <strong>Cảnh báo bẫy chuyển hướng mở (Open Redirect):</strong>
+            <p>Liên kết này lợi dụng cổng chuyển hướng trung gian để chuyển hướng người dùng tới địa chỉ: {{ url_forensics.redirect_target_url }}.</p>
+        </div>
+        {% endif %}
+
+        {% if url_forensics.is_shortened and url_forensics.resolved_url %}
+        <div class="forensics-alert-box alert-info">
+            <strong>Giải mã liên kết rút gọn:</strong>
+            <p>Địa chỉ đích thực sự sau khi giải mã: {{ url_forensics.resolved_url }}</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Khoi danh gia chi tiet (Tai bat dong bo, khong bao gio gay do man hinh) -->
+    {% if gemini_enabled %}
+    <section id="gemini-card" class="gemini-card">
+        <div class="gemini-header">
+            <div class="gemini-title-wrap">
+                <h3 class="gemini-title">Đánh giá chi tiết</h3>
+            </div>
+            <span id="gemini-status-tag" class="gemini-category-tag">Đang kiểm tra...</span>
+        </div>
+
+        <!-- Trang thai dang tai -->
+        <div id="gemini-loading" class="gemini-loading-box">
+            <div class="gemini-pulse-dot"></div>
+            <span>Đang đối soát dữ liệu và phân tích ngữ cảnh...</span>
+        </div>
+
+        <!-- Trang thai ket qua thanh cong -->
+        <div id="gemini-result-body" style="display: none;">
+            <div class="gemini-body">
+                <ul id="gemini-analysis-list" class="gemini-analysis-list"></ul>
+                <div id="gemini-rec-box" class="gemini-rec" style="display: none;">
+                    <strong>Khuyến nghị an toàn:</strong> <span id="gemini-rec-text"></span>
+                </div>
+            </div>
+            <div class="gemini-meta">
+                <span id="gemini-confidence-text"></span>
+                <span id="gemini-model-text"></span>
+            </div>
+        </div>
+
+        <!-- Trang thai Google qua tai hoac mang cham -->
+        <div id="gemini-fallback" style="display: none;" class="gemini-fallback-box">
+            <p>Hệ thống kiểm tra trực tuyến hiện đang phản hồi chậm do quá tải. Kết quả đối soát phía trên vẫn đảm bảo an toàn tuyệt đối.</p>
+            <button type="button" class="btn btn-secondary" onclick="fetchGeminiAnalysis()">Thử kết nối lại</button>
+        </div>
+    </section>
+
+    <script>
+        const scanContent = {{ content|tojson }};
+        function formatToBullets(text) {
+            if (!text) return [];
+            let lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            let bullets = [];
+            lines.forEach(line => {
+                let cleaned = line.replace(/^[-*•\d.]\s*/, '').trim();
+                if (cleaned) {
+                    bullets.push(cleaned);
+                }
+            });
+            if (bullets.length <= 1 && text.length > 60) {
+                bullets = text.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 5);
+            }
+            return bullets.length > 0 ? bullets : [text];
+        }
+
+        function fetchGeminiAnalysis() {
+            const card = document.getElementById('gemini-card');
+            const loading = document.getElementById('gemini-loading');
+            const resultBody = document.getElementById('gemini-result-body');
+            const fallback = document.getElementById('gemini-fallback');
+            const statusTag = document.getElementById('gemini-status-tag');
+
+            loading.style.display = 'flex';
+            resultBody.style.display = 'none';
+            fallback.style.display = 'none';
+            statusTag.textContent = 'Đang kiểm tra...';
+
+            const formData = new FormData();
+            formData.append('content', scanContent);
+
+            fetch('/api/gemini-consult', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = 'none';
+                if (data && data.active && !data.error) {
+                    resultBody.style.display = 'block';
+                    if (data.is_scam) {
+                        card.classList.add('gemini-alert');
+                        card.classList.remove('gemini-safe');
+                    } else {
+                        card.classList.add('gemini-safe');
+                        card.classList.remove('gemini-alert');
+                    }
+
+                    statusTag.textContent = data.category || 'Hoàn tất đánh giá';
+                    
+                    // Render danh sach gach dau dong
+                    const listEl = document.getElementById('gemini-analysis-list');
+                    listEl.innerHTML = '';
+                    const bullets = formatToBullets(data.analysis || '');
+                    bullets.forEach(b => {
+                        const li = document.createElement('li');
+                        li.textContent = b;
+                        listEl.appendChild(li);
+                    });
+
+                    if (data.recommendation) {
+                        document.getElementById('gemini-rec-box').style.display = 'block';
+                        document.getElementById('gemini-rec-text').textContent = data.recommendation;
+                    }
+
+                    document.getElementById('gemini-confidence-text').textContent = 'Độ tin cậy: ' + (data.confidence || 95) + '%';
+                    document.getElementById('gemini-model-text').textContent = 'Nguồn dữ liệu: ' + (data.model_used || 'Trực tuyến');
+                } else {
+                    fallback.style.display = 'block';
+                    statusTag.textContent = 'Tạm gián đoạn';
+                }
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                fallback.style.display = 'block';
+                statusTag.textContent = 'Tạm gián đoạn';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchGeminiAnalysis);
+    </script>
+    {% endif %}
+
+
+
+    <!-- KHOI DONG GOP DU LIEU AN NINH CONG DONG -->
+    <div class="community-action-card" id="community-action-card">
+        <div class="community-card-header">
+            <div>
+                <h3 class="community-card-title">Đánh giá và Tín nhiệm cộng đồng</h3>
+                <p class="community-card-subtitle" id="community-subtitle">
+                    {% if community_stats and community_stats.is_reported and community_stats.total_votes > 0 %}
+                        Đã ghi nhận <strong>{{ community_stats.total_votes }} lượt đánh giá</strong> từ cộng đồng người dùng.
+                        {% if community_stats.scam_types %}
+                            (Dấu hiệu phản ánh: {{ community_stats.scam_types|join(', ') }})
+                        {% endif %}
+                    {% else %}
+                        Nội dung này chưa có dữ liệu đánh giá từ cộng đồng. Hãy là người đầu tiên đóng góp dữ liệu bảo vệ cộng đồng.
+                    {% endif %}
+                </p>
+            </div>
+            <div class="community-badge-wrap">
+                <span id="community-badge-safe" class="community-badge-tag tag-safe">{{ community_stats.safe_count if community_stats else 0 }} An toàn</span>
+                <span id="community-badge-scam" class="community-badge-tag tag-danger">{{ community_stats.scam_count if community_stats else 0 }} Lừa đảo</span>
+            </div>
+        </div>
+
+        <!-- THANH TY LE TIN NHIEM CONG DONG (CONSENSUS PROGRESS BAR) -->
+        <div class="community-consensus-wrap">
+            <div class="consensus-labels">
+                <span id="consensus-safe-label" class="consensus-lbl-safe">
+                    {% if community_stats and community_stats.total_votes > 0 %}
+                        An toàn: {{ community_stats.safe_pct }}% ({{ community_stats.safe_count }} lượt)
+                    {% else %}
+                        Chưa có đánh giá an toàn
+                    {% endif %}
+                </span>
+                <span id="consensus-scam-label" class="consensus-lbl-scam">
+                    {% if community_stats and community_stats.total_votes > 0 %}
+                        Lừa đảo: {{ community_stats.scam_pct }}% ({{ community_stats.scam_count }} lượt)
+                    {% else %}
+                        Chưa có báo cáo lừa đảo
+                    {% endif %}
+                </span>
+            </div>
+            <div class="consensus-bar-track">
+                <div id="consensus-bar-safe" class="consensus-bar-segment segment-safe" style="width: {{ community_stats.safe_pct if (community_stats and community_stats.total_votes > 0) else 50 }}%;"></div>
+                <div id="consensus-bar-scam" class="consensus-bar-segment segment-scam" style="width: {{ community_stats.scam_pct if (community_stats and community_stats.total_votes > 0) else 50 }}%;"></div>
+            </div>
+            <div class="consensus-meta-note" id="consensus-meta-note">
+                {% if community_stats and community_stats.total_votes > 0 %}
+                    Dữ liệu đối soát tự động từ các lượt gửi độc lập của người dùng trong hệ sinh thái an ninh P-Sieve.
+                {% else %}
+                    Nhấn nút bên dưới để xác nhận an toàn hoặc gửi cảnh báo lừa đảo cho cộng đồng.
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="community-card-buttons" id="community-btn-group">
+            <button type="button" class="btn btn-report-danger" onclick="toggleQuickReportForm()">
+                Báo cáo lừa đảo
+            </button>
+            <button type="button" class="btn btn-report-safe" onclick="submitQuickFeedback('safe')">
+                Xác nhận an toàn
+            </button>
+        </div>
+
+        <!-- Form bao cao nhanh mo rong tai cho -->
+        <div id="quick-report-box" class="quick-report-box" style="display: none;">
+            <div class="quick-report-form-inner">
+                <div class="form-group">
+                    <label for="qr-scam-type">Hình thức / Thủ đoạn lừa đảo:</label>
+                    <select id="qr-scam-type">
+                        <option value="Giả danh cơ quan chức năng (Công an, Tòa án)">Giả danh cơ quan chức năng (Công an, Tòa án, Viện kiểm sát)</option>
+                        <option value="Mạo danh ngân hàng / Dụ bấm link trộm OTP">Mạo danh ngân hàng / Dụ bấm link trộm OTP</option>
+                        <option value="Lừa đảo tuyển dụng làm nhiệm vụ online">Lừa đảo tuyển dụng làm nhiệm vụ online, nạp tiền</option>
+                        <option value="Cuộc gọi nháy máy / Trừ cước viễn thông">Cuộc gọi nháy máy ép gọi lại trừ cước</option>
+                        <option value="Sàn đầu tư tài chính / Cờ bạc trá hình">Sàn đầu tư tài chính ảo / Cờ bạc trá hình</option>
+                        <option value="Giả mạo nhân viên viễn thông / Đòi nợ cước">Giả mạo viễn thông / Đòi nợ cước</option>
+                        <option value="Khác">Hình thức lừa đảo khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qr-note">Chi tiết vụ việc (nếu có):</label>
+                    <input type="text" id="qr-note" placeholder="Ví dụ: Đối tượng tự xưng cán bộ điều tra yêu cầu chuyển tiền...">
+                </div>
+                <div class="quick-report-actions">
+                    <button type="button" class="btn btn-primary" onclick="submitQuickFeedback('scam')">Gửi báo cáo</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleQuickReportForm()">Hủy bỏ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thong bao phan hoi sau khi gui -->
+        <div id="quick-report-msg" class="quick-report-msg" style="display: none;"></div>
+    </div>
+
+    <script>
+        function toggleQuickReportForm() {
+            const box = document.getElementById('quick-report-box');
+            box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+        }
+
+        function submitQuickFeedback(actionType) {
+            const targetContent = {{ content|tojson }};
+            const inputType = {{ input_type|tojson }};
+            const scamType = document.getElementById('qr-scam-type') ? document.getElementById('qr-scam-type').value : 'Dấu hiệu lừa đảo';
+            const note = document.getElementById('qr-note') ? document.getElementById('qr-note').value : '';
+
+            const formData = new FormData();
+            formData.append('content', targetContent);
+            formData.append('content_type', inputType || 'text');
+            formData.append('scam_type', scamType);
+            formData.append('reporter_note', note);
+            formData.append('action', actionType);
+
+            fetch('/api/report', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const qrBox = document.getElementById('quick-report-box');
+                    if (qrBox) qrBox.style.display = 'none';
+                    const btnGroup = document.getElementById('community-btn-group');
+                    if (btnGroup) btnGroup.style.display = 'none';
+                    const msgEl = document.getElementById('quick-report-msg');
+                    if (msgEl) {
+                        msgEl.style.display = 'block';
+                        msgEl.textContent = data.message;
+                    }
+
+                    // Cap nhat thanh ty le tin nhiem truc tiep theo thoi gian thuc
+                    const safeBar = document.getElementById('consensus-bar-safe');
+                    const scamBar = document.getElementById('consensus-bar-scam');
+                    const safeLbl = document.getElementById('consensus-safe-label');
+                    const scamLbl = document.getElementById('consensus-scam-label');
+                    const badgeSafe = document.getElementById('community-badge-safe');
+                    const badgeScam = document.getElementById('community-badge-scam');
+                    const subTitle = document.getElementById('community-subtitle');
+                    const metaNote = document.getElementById('consensus-meta-note');
+
+                    if (safeBar && scamBar) {
+                        safeBar.style.width = data.safe_pct + '%';
+                        scamBar.style.width = data.scam_pct + '%';
+                    }
+                    if (safeLbl) safeLbl.textContent = 'An toàn: ' + data.safe_pct + '% (' + data.safe_count + ' lượt)';
+                    if (scamLbl) scamLbl.textContent = 'Lừa đảo: ' + data.scam_pct + '% (' + data.scam_count + ' lượt)';
+                    if (badgeSafe) badgeSafe.textContent = data.safe_count + ' An toàn';
+                    if (badgeScam) badgeScam.textContent = data.scam_count + ' Lừa đảo';
+                    if (subTitle) {
+                        subTitle.innerHTML = 'Đã ghi nhận <strong>' + data.total_votes + ' lượt đánh giá</strong> từ cộng đồng người dùng.';
+                    }
+                    if (metaNote) {
+                        metaNote.textContent = 'Cảm ơn bạn đã đóng góp! Dữ liệu đánh giá của bạn đã được cập nhật ngay vào hệ sinh thái an ninh.';
+                    }
+                } else {
+                    alert(data.error || 'Có lỗi xảy ra khi gửi báo cáo.');
+                }
+            })
+            .catch(err => {
+                alert('Không thể kết nối đến máy chủ. Vui lòng thử lại sau.');
+            });
+        }
+    </script>
+
+    <div class="result-actions">
+        <a href="/scan" class="btn btn-secondary">Kiểm tra nội dung khác</a>
+        <button type="button" class="btn btn-emergency-action" onclick="openEmergencyModal()">
+            Ứng cứu khẩn cấp (Khóa thẻ/lộ OTP)
+        </button>
+    </div>
+
+    <!-- MODAL UNG CUU KHAN CAP TRONG 15 PHUT VANG -->
+    <div id="emergency-modal" class="emergency-modal-overlay" style="display: none;" onclick="handleModalOverlayClick(event)">
+        <div class="emergency-modal-dialog">
+            <div class="emergency-modal-header">
+                <div>
+                    <h3 class="emergency-modal-title">Quy trình Ứng cứu Khẩn cấp trong 15 Phút Vàng</h3>
+                    <p class="emergency-modal-subtitle">Dành cho trường hợp đã lỡ chuyển tiền, cung cấp mã OTP hoặc nghi ngờ lộ dữ liệu tài khoản</p>
+                </div>
+                <button type="button" class="emergency-close-btn" onclick="closeEmergencyModal()" aria-label="Đóng">&times;</button>
+            </div>
+
+            <div class="emergency-modal-body">
+                <!-- BUOC 1: KHOA THE / PHONG TOA TAI KHOAN -->
+                <div class="emergency-step-card">
+                    <div class="emergency-step-header">
+                        <span class="emergency-step-number">Bước 1</span>
+                        <h4 class="emergency-step-name">Khóa thẻ và phong tỏa tài khoản ngân hàng ngay lập tức</h4>
+                    </div>
+                    <div class="emergency-step-content">
+                        <p class="emergency-step-intro">Hành động trong 5 - 15 phút đầu quyết định 90% khả năng ngăn kẻ gian tẩu tán tiền ra khỏi tài khoản trung gian:</p>
+                        <ul>
+                            <li><strong>Cách 1 (Nhanh nhất):</strong> Mở ngay ứng dụng ngân hàng trên điện thoại &gt; Quản lý dịch vụ thẻ &gt; Chọn <strong>Khóa thẻ tạm thời</strong>.</li>
+                            <li><strong>Cách 2:</strong> Gọi ngay số hotline khẩn cấp 24/7 của ngân hàng bạn đang sử dụng:</li>
+                        </ul>
+
+                        <!-- DANH BA HOTLINE NGAN HANG -->
+                        <div class="emergency-hotline-grid">
+                            <div class="hotline-card"><strong>Vietcombank</strong><a href="tel:1900545413">1900 545413</a></div>
+                            <div class="hotline-card"><strong>BIDV</strong><a href="tel:19009247">1900 9247</a></div>
+                            <div class="hotline-card"><strong>VietinBank</strong><a href="tel:1900558868">1900 558868</a></div>
+                            <div class="hotline-card"><strong>MBBank</strong><a href="tel:1900545426">1900 545426</a></div>
+                            <div class="hotline-card"><strong>Techcombank</strong><a href="tel:1800588822">1800 588822</a></div>
+                            <div class="hotline-card"><strong>ACB</strong><a href="tel:1900545486">1900 545486</a></div>
+                            <div class="hotline-card"><strong>VPBank</strong><a href="tel:1900545415">1900 545415</a></div>
+                            <div class="hotline-card"><strong>Agribank</strong><a href="tel:1900558818">1900 558818</a></div>
+                            <div class="hotline-card"><strong>TPBank</strong><a href="tel:1900585885">1900 585885</a></div>
+                            <div class="hotline-card"><strong>Sacombank</strong><a href="tel:1800585888">1800 585888</a></div>
+                            <div class="hotline-card"><strong>Ví MoMo</strong><a href="tel:1900545441">1900 545441</a></div>
+                            <div class="hotline-card"><strong>Ví ZaloPay</strong><a href="tel:1900545436">1900 545436</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUOC 2: CO LAP THIET BI VA DOI MAT KHAU -->
+                <div class="emergency-step-card">
+                    <div class="emergency-step-header">
+                        <span class="emergency-step-number">Bước 2</span>
+                        <h4 class="emergency-step-name">Cô lập thiết bị và đổi mật khẩu từ thiết bị an toàn</h4>
+                    </div>
+                    <div class="emergency-step-content">
+                        <ul>
+                            <li><strong>Nếu đã lỡ cài file lạ (.apk):</strong> Ngắt ngay kết nối Wi-Fi và Dữ liệu di động (4G/5G), bật Chế độ máy bay để cắt quyền điều khiển từ xa của mã độc.</li>
+                            <li><strong>Đổi mật khẩu:</strong> Dùng một thiết bị sạch khác (máy tính hoặc điện thoại người thân) để đổi mật khẩu tài khoản ngân hàng, email quản lý tài khoản và mạng xã hội.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- BUOC 3: THU THAP CHUNG CU PHAP LY -->
+                <div class="emergency-step-card">
+                    <div class="emergency-step-header">
+                        <span class="emergency-step-number">Bước 3</span>
+                        <h4 class="emergency-step-name">Thu thập và bảo tồn toàn bộ chứng cứ pháp lý</h4>
+                    </div>
+                    <div class="emergency-step-content">
+                        <ul>
+                            <li>Chụp ảnh lại toàn bộ màn hình tin nhắn, số điện thoại, danh bạ nhóm chat, đường link lừa đảo. <strong>Tuyệt đối không xóa tin nhắn hoặc rời nhóm</strong>.</li>
+                            <li>Xuất sao kê giao dịch hoặc chụp ảnh biên lai chuyển tiền có đầy đủ: Mã giao dịch (FT/Trace ID), thời gian chính xác, số tài khoản nhận tiền và tên chủ tài khoản thụ hưởng.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- BUOC 4: TRINH BAO CO QUAN CHUC NANG -->
+                <div class="emergency-step-card">
+                    <div class="emergency-step-header">
+                        <span class="emergency-step-number">Bước 4</span>
+                        <h4 class="emergency-step-name">Trình báo Cơ quan Cảnh sát điều tra &amp; An ninh mạng</h4>
+                    </div>
+                    <div class="emergency-step-content">
+                        <ul>
+                            <li><strong>Đến trực tiếp:</strong> Công an Phường/Xã hoặc Công an Quận/Huyện nơi bạn cư trú để nộp đơn tố giác tội phạm kèm chứng cứ sao kê đã in.</li>
+                            <li><strong>Đường dây nóng Cục An ninh mạng và PCTP công nghệ cao (A05 - Bộ Công an):</strong> <a href="tel:0692348560">069 2348560</a></li>
+                            <li><strong>Cổng Cảnh báo An toàn Không gian mạng Quốc gia:</strong> <a href="https://canhbao.khonggianmang.vn" target="_blank" rel="noopener">canhbao.khonggianmang.vn</a> (Cục An toàn thông tin).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="emergency-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEmergencyModal()">Đóng cửa sổ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEmergencyModal() {
+            const modal = document.getElementById('emergency-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeEmergencyModal() {
+            const modal = document.getElementById('emergency-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleModalOverlayClick(e) {
+            if (e.target && e.target.id === 'emergency-modal') {
+                closeEmergencyModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEmergencyModal();
+            }
+        });
+    </script>
+
+    <details class="original-content">
+        <summary>Xem lại nội dung đã kiểm tra</summary>
+        <pre>{{ content }}</pre>
+    </details>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const r = 48;
+        const circumference = 2 * Math.PI * r;
+        const duration = 1400; // 1.4 giay
+
+        // 1. Kich hoat Vong tron Danh gia tinh (Static score)
+        const staticBar = document.getElementById('score-circle-bar-static');
+        const staticNum = document.getElementById('animated-score-static');
+        const targetStatic = {{ score }};
+
+        if (staticBar && staticNum) {
+            staticBar.style.strokeDasharray = circumference;
+            staticBar.style.strokeDashoffset = circumference;
+
+            setTimeout(function() {
+                const staticOffset = circumference - (circumference * targetStatic / 100);
+                staticBar.style.strokeDashoffset = staticOffset;
+
+                const startStaticTime = performance.now();
+                function updateStatic(currentTime) {
+                    const elapsed = currentTime - startStaticTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    staticNum.innerText = Math.round(easeOut * targetStatic);
+                    if (progress < 1) {
+                        requestAnimationFrame(updateStatic);
+                    } else {
+                        staticNum.innerText = targetStatic;
+                    }
+                }
+                requestAnimationFrame(updateStatic);
+            }, 120);
+        }
+
+        // 2. Kich hoat Vong tron Muc do rui ro (Dynamic AI/ML risk prob)
+        const dynamicBar = document.getElementById('score-circle-bar-dynamic');
+        const dynamicNum = document.getElementById('animated-score-dynamic');
+        const targetDynamic = {{ ai_result.scam_prob if (ai_result and ai_result.active) else 0 }};
+
+        if (dynamicBar && dynamicNum) {
+            dynamicBar.style.strokeDasharray = circumference;
+            dynamicBar.style.strokeDashoffset = circumference;
+
+            setTimeout(function() {
+                const dynamicOffset = circumference - (circumference * targetDynamic / 100);
+                dynamicBar.style.strokeDashoffset = dynamicOffset;
+
+                const startDynamicTime = performance.now();
+                function updateDynamic(currentTime) {
+                    const elapsed = currentTime - startDynamicTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    dynamicNum.innerText = Math.round(easeOut * targetDynamic);
+                    if (progress < 1) {
+                        requestAnimationFrame(updateDynamic);
+                    } else {
+                        dynamicNum.innerText = targetDynamic;
+                    }
+                }
+                requestAnimationFrame(updateDynamic);
+            }, 200);
+        }
+    });
+    </script>
+</section>
+{% endblock %}

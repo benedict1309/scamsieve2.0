@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+
+{% block title %}Kiểm tra an toàn thông tin & Hình ảnh - P-Sieve{% endblock %}
+
+{% block content %}
+<section class="scan-page">
+    <div class="scan-header">
+        <h1>Kiểm tra an toàn</h1>
+    </div>
+    <p class="scan-desc">
+        Hệ thống tra cứu và giám định trực tuyến các nguy cơ lừa đảo số qua văn bản hoặc hình ảnh.
+    </p>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <!-- 2 LỰA CHỌN KIỂM TRA KÈM HƯỚNG DẪN NGẮN GỌN DỄ HIỂU -->
+    <div class="scan-choice-hub" id="scan-choice-hub">
+        
+        <!-- LỰA CHỌN 1: KIỂM TRA BẰNG NỘI DUNG -->
+        <div class="scan-choice-card {% if mode != 'image' %}active{% endif %}" id="choice-card-text" onclick="switchScanMode('text')">
+            <div class="choice-card-top">
+                <span class="choice-tag {% if mode != 'image' %}choice-tag-active{% else %}choice-tag-inactive{% endif %}" id="choice-tag-text">LỰA CHỌN 1</span>
+                <span class="choice-status-pill" id="pill-status-text">{% if mode != 'image' %}Đang xem{% else %}Bấm để chọn{% endif %}</span>
+            </div>
+            <div class="choice-icon-wrap icon-text">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <line x1="10" y1="9" x2="8" y2="9"></line>
+                    <circle cx="17" cy="17" r="3"></circle>
+                    <line x1="19.5" y1="19.5" x2="22" y2="22"></line>
+                </svg>
+            </div>
+            <h2 class="choice-title">Kiểm tra bằng nội dung</h2>
+            <div class="choice-guide-box">
+                <div class="choice-guide-heading">HƯỚNG DẪN NGẮN GỌN:</div>
+                <ol class="choice-guide-steps">
+                    <li>Lựa chọn tin nhắn SMS, số điện thoại lạ, link, trang web hoặc email nghi vấn.</li>
+                    <li>Dán vào ô nội dung bên dưới và nhấn nút kiểm tra.</li>
+                    <li>Hệ thống đối soát dữ liệu và phân tích dấu hiệu lừa đảo.</li>
+                </ol>
+            </div>
+            <button type="button" class="btn btn-choice-action {% if mode != 'image' %}btn-choice-active{% else %}btn-choice-inactive{% endif %}" id="btn-choice-text">
+                {% if mode != 'image' %}Đang xem{% else %}Chuyển sang{% endif %}
+            </button>
+        </div>
+
+        <!-- LỰA CHỌN 2: KIỂM TRA BẰNG HÌNH ẢNH -->
+        <div class="scan-choice-card {% if mode == 'image' %}active{% endif %}" id="choice-card-image" onclick="switchScanMode('image')">
+            <div class="choice-card-top">
+                <span class="choice-tag {% if mode == 'image' %}choice-tag-active{% else %}choice-tag-inactive{% endif %}" id="choice-tag-image">LỰA CHỌN 2</span>
+                <span class="choice-status-pill" id="pill-status-image">{% if mode == 'image' %}Đang xem{% else %}Bấm để chọn{% endif %}</span>
+            </div>
+            <div class="choice-icon-wrap icon-image">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+            </div>
+            <h2 class="choice-title">Kiểm tra bằng hình ảnh</h2>
+            <div class="choice-guide-box">
+                <div class="choice-guide-heading">HƯỚNG DẪN NGẮN GỌN:</div>
+                <ol class="choice-guide-steps">
+                    <li>Chuẩn bị ảnh chụp màn hình biên lai, giấy triệu tập hoặc đoạn chat.</li>
+                    <li>Tải lên hoặc dán ảnh vào khung ảnh.</li>
+                    <li>Trí tuệ nhân tạo đọc chữ và phát hiện dấu hiệu hình ảnh giả, các cắt ghép trực tiếp.</li>
+                </ol>
+            </div>
+            <button type="button" class="btn btn-choice-action {% if mode == 'image' %}btn-choice-active{% else %}btn-choice-inactive{% endif %}" id="btn-choice-image">
+                {% if mode == 'image' %}Đang xem{% else %}Chuyển sang{% endif %}
+            </button>
+        </div>
+
+    </div>
+
+    <!-- KHU VỰC THỰC HIỆN KIỂM TRA -->
+    <div class="scan-panels-container">
+
+        <!-- PANEL 1: TRANG KIỂM TRA BẰNG NỘI DUNG VĂN BẢN -->
+        <div class="scan-panel-wrapper" id="panel-text-scan" style="{% if mode == 'image' %}display: none;{% endif %}">
+            <div class="panel-header">
+                <div class="panel-header-badge">Chế độ kiểm tra nội dung</div>
+                <h2 class="panel-title">Kiểm tra thông tin văn bản</h2>
+                <p class="panel-subtitle">Tra cứu tin nhắn SMS, số điện thoại, đường link website hoặc email</p>
+            </div>
+
+            <form method="post" action="/scan" class="column-form" id="text-scan-form">
+                <div class="form-group">
+                    <label for="content">Nội dung cần kiểm tra <span class="label-required">*</span></label>
+                    <textarea
+                        id="content"
+                        name="content"
+                        rows="8"
+                        placeholder="Nhập đường link, số điện thoại, email hoặc tin nhắn SMS..."
+                        required
+                    >{{ content or "" }}</textarea>
+                </div>
+
+                <!-- Nhận diện thể loại tự động -->
+                <div class="auto-type-indicator-row" id="auto-type-indicator-row">
+                    <span class="auto-type-label">Hệ thống tự động nhận diện:</span>
+                    <span class="auto-type-badge" id="auto-type-badge">Tin nhắn / Đoạn hội thoại</span>
+                </div>
+
+                <!-- Hidden select để đảm bảo tương thích backend -->
+                <select id="input_type" name="input_type" style="display: none;" aria-hidden="true">
+                    <option value="text" {% if input_type == "text" or not input_type %}selected{% endif %}>Tin nhắn / Đoạn hội thoại</option>
+                    <option value="phone" {% if input_type == "phone" %}selected{% endif %}>Số điện thoại tra cứu</option>
+                    <option value="email" {% if input_type == "email" %}selected{% endif %}>Thư điện tử (Email)</option>
+                    <option value="url" {% if input_type == "url" %}selected{% endif %}>Đường dẫn liên kết (URL / Web)</option>
+                </select>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">Kiểm tra nội dung</button>
+                </div>
+                <div class="form-info-note">Dữ liệu kiểm tra được đối soát bảo mật và phân tích an toàn.</div>
+            </form>
+
+            <div class="scan-panel-switch-banner">
+                <span>Bạn muốn kiểm tra biên lai, giấy tờ hoặc ảnh chụp màn hình?</span>
+                <button type="button" class="btn-switch-link" onclick="switchScanMode('image')">Chuyển sang kiểm tra bằng hình ảnh</button>
+            </div>
+        </div>
+
+        <!-- PANEL 2: TRANG KIỂM TRA BẰNG HÌNH ẢNH -->
+        <div class="scan-panel-wrapper" id="panel-image-scan" style="{% if mode != 'image' %}display: none;{% endif %}">
+            <div class="panel-header">
+                <div class="panel-header-badge">Chế độ kiểm tra hình ảnh</div>
+                <h2 class="panel-title">Tải hoặc chụp ảnh màn hình</h2>
+                <p class="panel-subtitle">Giám định biên lai ngân hàng, giấy triệu tập giả mạo hoặc ảnh chụp chat</p>
+            </div>
+
+            <form method="post" action="/scan-image" enctype="multipart/form-data" class="column-form" id="image-scan-form">
+                <!-- Vùng kéo thả (Dropzone) -->
+                <div class="image-dropzone-box" id="image-dropzone" onclick="document.getElementById('file-picker-input').click()">
+                    <div class="dropzone-main-text">Kéo thả ảnh chụp màn hình vào đây hoặc bấm để chọn tệp</div>
+                </div>
+
+                <!-- Input file thông thường -->
+                <input type="file" id="file-picker-input" name="image" accept="image/*" style="display:none;" onchange="handleRawFileSelected(this.files)">
+
+                <!-- Input chụp camera cho thiết bị di động -->
+                <input type="file" id="camera-picker-input" accept="image/*" capture="environment" style="display:none;" onchange="handleRawFileSelected(this.files)">
+
+                <!-- Các nút bấm tải lên và chụp camera -->
+                <div class="upload-buttons-row">
+                    <button type="button" class="btn btn-secondary btn-half" onclick="document.getElementById('file-picker-input').click()">
+                        Tải ảnh lên
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-half" onclick="document.getElementById('camera-picker-input').click()">
+                        Chụp ảnh từ camera
+                    </button>
+                </div>
+
+                <!-- Hộp xem trước ảnh (Preview Box) -->
+                <div id="image-preview-panel" class="preview-panel" style="display:none;">
+                    <div class="preview-thumbnail-wrap">
+                        <img id="image-preview-img" src="" alt="Xem trước ảnh chụp màn hình" class="preview-img">
+                    </div>
+                    <div class="preview-details">
+                        <div id="image-preview-filename" class="preview-filename">anh_chup_man_hinh.png</div>
+                        <div id="image-preview-filesize" class="preview-filesize">0 MB</div>
+                        <div class="preview-btn-group">
+                            <button type="button" class="btn btn-danger-text" onclick="clearSelectedImage()">Xóa ảnh</button>
+                            <button type="button" class="btn btn-link-text" onclick="document.getElementById('file-picker-input').click()">Đổi ảnh khác</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hộp trạng thái tiến trình / Loading Box -->
+                <div id="scan-progress-box" class="scan-progress-box" style="display:none;">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-active"></div>
+                    </div>
+                    <span id="scan-progress-text" class="scan-progress-text">Đang tối ưu hình ảnh và tiến hành phân tích...</span>
+                </div>
+
+                <!-- Hộp trạng thái tiến trình trích xuất OCR -->
+                <div id="ocr-status-box" class="ocr-status-box" style="display:none;">
+                    <div class="ocr-progress-header">
+                        <span id="ocr-status-text" class="ocr-status-text">Đang kết nối hệ thống trích xuất nội dung từ ảnh...</span>
+                        <span id="ocr-progress-percent" class="ocr-progress-percent">0%</span>
+                    </div>
+                    <div class="ocr-progress-track">
+                        <div id="ocr-progress-fill" class="ocr-progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Các nút hành động sau khi có ảnh -->
+                <div class="form-actions form-actions-stacked">
+                    <button type="submit" class="btn btn-primary btn-block" id="btn-submit-image-scan" disabled>
+                        Kiểm tra hình ảnh
+                    </button>
+                    <button type="button" class="btn btn-outline btn-block" id="btn-extract-to-form" style="display:none;" onclick="extractTextToForm()">
+                        Trích xuất chữ điền vào trang kiểm tra nội dung
+                    </button>
+                </div>
+                <div class="form-info-note">Hệ thống hỗ trợ nén ảnh tức thì và tự động giám định thị giác an toàn.</div>
+            </form>
+
+            <div class="scan-panel-switch-banner">
+                <span>Bạn muốn tra cứu số điện thoại, đường link hoặc tin nhắn văn bản?</span>
+                <button type="button" class="btn-switch-link" onclick="switchScanMode('text')">Chuyển sang kiểm tra bằng nội dung</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Nap thu vien OCR Tesseract.js du phong khi may chu AI qua tai han muc -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+let currentSelectedFile = null;
+
+// Ham nen anh truc tiep tren trinh duyet bang HTML5 Canvas de giam 85% dung luong va tang toc do upload
+function compressImageClient(file, maxDim = 1200, quality = 0.82) {
+    return new Promise((resolve) => {
+        if (!file || !file.type.startsWith('image/')) {
+            resolve(file);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                let w = img.width;
+                let h = img.height;
+                if (w > maxDim || h > maxDim) {
+                    if (w > h) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    } else {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(img, 0, 0, w, h);
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const newName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                        const compressedFile = new File([blob], newName, { type: 'image/jpeg' });
+                        resolve(compressedFile);
+                    } else {
+                        resolve(file);
+                    }
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+}
+
+// Xu ly keo tha vao dropzone
+const dropZone = document.getElementById('image-dropzone');
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-active');
+    }, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-active');
+    }, false);
+});
+
+dropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files && files.length > 0) {
+        handleRawFileSelected(files);
+    }
+});
+
+// Xu ly dan anh truc tiep tu Clipboard (Ctrl+V / Cmd+V)
+document.addEventListener('paste', (e) => {
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            const blob = items[i].getAsFile();
+            const file = new File([blob], "screenshot_pasted_" + Date.now() + ".png", { type: blob.type });
+            handleRawFileSelected([file]);
+            break;
+        }
+    }
+});
+
+async function handleRawFileSelected(files) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file.type.startsWith('image/')) {
+        alert('Tệp được chọn không phải là hình ảnh hợp lệ.');
+        return;
+    }
+
+    // Hien thi xem truoc ngay lap tuc cho nguoi dung
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('image-preview-img').src = e.target.result;
+        document.getElementById('image-preview-filename').innerText = file.name;
+        document.getElementById('image-preview-filesize').innerText = (file.size / (1024 * 1024)).toFixed(2) + ' MB (Đang tối ưu...)';
+        document.getElementById('image-dropzone').style.display = 'none';
+        document.getElementById('image-preview-panel').style.display = 'flex';
+        document.getElementById('btn-submit-image-scan').disabled = true;
+    };
+    reader.readAsDataURL(file);
+
+    // Tien hanh nen anh tren trinh duyet de upload sieu nhanh
+    const compressed = await compressImageClient(file);
+    currentSelectedFile = compressed;
+
+    // Dong bo vao the input file
+    const container = new DataTransfer();
+    container.items.add(compressed);
+    document.getElementById('file-picker-input').files = container.files;
+
+    // Cap nhat dung luong da toi uu
+    document.getElementById('image-preview-filesize').innerText = (compressed.size / 1024).toFixed(1) + ' KB (Đã tối ưu tốc độ)';
+    document.getElementById('btn-submit-image-scan').disabled = false;
+    document.getElementById('btn-extract-to-form').style.display = 'block';
+}
+
+function clearSelectedImage() {
+    currentSelectedFile = null;
+    document.getElementById('file-picker-input').value = '';
+    document.getElementById('camera-picker-input').value = '';
+    document.getElementById('image-preview-img').src = '';
+    document.getElementById('image-dropzone').style.display = 'flex';
+    document.getElementById('image-preview-panel').style.display = 'none';
+    document.getElementById('btn-submit-image-scan').disabled = true;
+    document.getElementById('btn-extract-to-form').style.display = 'none';
+    document.getElementById('ocr-status-box').style.display = 'none';
+    document.getElementById('scan-progress-box').style.display = 'none';
+}
+
+// Xu ly khi bam nut "Quet hinh anh ngay"
+document.getElementById('image-scan-form').addEventListener('submit', function(e) {
+    const btnSubmit = document.getElementById('btn-submit-image-scan');
+    const btnExtract = document.getElementById('btn-extract-to-form');
+    btnSubmit.disabled = true;
+    btnSubmit.innerText = 'Đang phân tích an ninh hình ảnh... (Vui lòng đợi vài giây)';
+    if (btnExtract) btnExtract.disabled = true;
+
+    const progressBox = document.getElementById('scan-progress-box');
+    const progressText = document.getElementById('scan-progress-text');
+    if (progressBox) {
+        progressBox.style.display = 'block';
+        progressText.innerText = 'Đang truyền tải dữ liệu và phân tích dấu hiệu lừa đảo...';
+    }
+});
+
+// Trich xuat noi dung tu anh sang form ben canh (Co thanh doi tien trinh)
+async function extractTextToForm() {
+    if (!currentSelectedFile) {
+        alert('Vui lòng chọn hoặc dán hình ảnh trước.');
+        return;
+    }
+
+    const statusBox = document.getElementById('ocr-status-box');
+    const statusText = document.getElementById('ocr-status-text');
+    const progressPercent = document.getElementById('ocr-progress-percent');
+    const progressFill = document.getElementById('ocr-progress-fill');
+    const btnExtract = document.getElementById('btn-extract-to-form');
+
+    statusBox.className = 'ocr-status-box';
+    statusBox.style.display = 'block';
+    statusText.innerText = 'Đang kết nối hệ thống trích xuất nội dung từ ảnh...';
+    btnExtract.disabled = true;
+
+    // Khoi dong thanh doi tien trinh
+    let progress = 12;
+    progressFill.style.width = '12%';
+    progressFill.classList.add('animating');
+    progressPercent.innerText = '12%';
+
+    const progressTimer = setInterval(() => {
+        if (progress < 88) {
+            progress += Math.floor(Math.random() * 10) + 6;
+            if (progress > 88) progress = 88;
+            progressFill.style.width = progress + '%';
+            progressPercent.innerText = progress + '%';
+            if (progress > 35 && progress < 65) {
+                statusText.innerText = 'Đang quét hình ảnh và nhận diện từng dòng chữ...';
+            } else if (progress >= 65) {
+                statusText.innerText = 'Đang trích xuất toàn bộ câu chữ, liên kết và số điện thoại...';
+            }
+        }
+    }, 250);
+
+    try {
+        const formData = new FormData();
+        formData.append('image', currentSelectedFile);
+
+        const response = await fetch('/api/ocr-extract', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+
+        clearInterval(progressTimer);
+
+        if (data && data.success && (data.extracted_text || data.extracted_phone || data.extracted_url)) {
+            progressFill.style.width = '100%';
+            progressPercent.innerText = '100%';
+            progressFill.classList.remove('animating');
+            statusBox.classList.add('success');
+            applyExtractedData(data);
+            btnExtract.disabled = false;
+            return;
+        }
+
+        // Neu may chu AI gap gioi han han muc hoac khong nhan dien duoc, tu dong chuyen sang Client-side OCR du phong
+        statusText.innerText = 'Máy chủ AI đang bận. Đang tự động chuyển sang bộ đọc OCR cục bộ trên trình duyệt...';
+        await runClientSideOCR();
+
+    } catch (err) {
+        clearInterval(progressTimer);
+        // Neu loi mang, chay bo doc OCR tren trinh duyet
+        statusText.innerText = 'Kết nối mạng chậm. Đang chuyển sang bộ đọc OCR cục bộ trên trình duyệt...';
+        await runClientSideOCR();
+    } finally {
+        clearInterval(progressTimer);
+        progressFill.classList.remove('animating');
+        btnExtract.disabled = false;
+    }
+}
+
+// Ham chuyen doi qua lai giua 2 che do kiem tra (Noi dung vs Hinh anh)
+function switchScanMode(mode) {
+    const cardText = document.getElementById('choice-card-text');
+    const cardImage = document.getElementById('choice-card-image');
+    const panelText = document.getElementById('panel-text-scan');
+    const panelImage = document.getElementById('panel-image-scan');
+    const btnChoiceText = document.getElementById('btn-choice-text');
+    const btnChoiceImage = document.getElementById('btn-choice-image');
+    const pillText = document.getElementById('pill-status-text');
+    const pillImage = document.getElementById('pill-status-image');
+    const tagText = document.getElementById('choice-tag-text');
+    const tagImage = document.getElementById('choice-tag-image');
+
+    if (mode === 'image') {
+        if (cardText) cardText.classList.remove('active');
+        if (cardImage) cardImage.classList.add('active');
+        if (panelText) panelText.style.display = 'none';
+        if (panelImage) panelImage.style.display = 'block';
+
+        if (tagText) tagText.className = 'choice-tag choice-tag-inactive';
+        if (tagImage) tagImage.className = 'choice-tag choice-tag-active';
+
+        if (btnChoiceText) {
+            btnChoiceText.className = 'btn btn-choice-action btn-choice-inactive';
+            btnChoiceText.textContent = 'Chuyển sang';
+        }
+        if (btnChoiceImage) {
+            btnChoiceImage.className = 'btn btn-choice-action btn-choice-active';
+            btnChoiceImage.textContent = 'Đang xem';
+        }
+        if (pillText) pillText.textContent = 'Bấm để chọn';
+        if (pillImage) pillImage.textContent = 'Đang xem';
+
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', '/scan?mode=image');
+        }
+        if (panelImage) {
+            panelImage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    } else {
+        if (cardText) cardText.classList.add('active');
+        if (cardImage) cardImage.classList.remove('active');
+        if (panelImage) panelImage.style.display = 'none';
+        if (panelText) panelText.style.display = 'block';
+
+        if (tagText) tagText.className = 'choice-tag choice-tag-active';
+        if (tagImage) tagImage.className = 'choice-tag choice-tag-inactive';
+
+        if (btnChoiceText) {
+            btnChoiceText.className = 'btn btn-choice-action btn-choice-active';
+            btnChoiceText.textContent = 'Đang xem';
+        }
+        if (btnChoiceImage) {
+            btnChoiceImage.className = 'btn btn-choice-action btn-choice-inactive';
+            btnChoiceImage.textContent = 'Chuyển sang';
+        }
+        if (pillText) pillText.textContent = 'Đang xem';
+        if (pillImage) pillImage.textContent = 'Bấm để chọn';
+
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', '/scan?mode=text');
+        }
+        if (panelText) {
+            panelText.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+}
+
+// Bo doc OCR truc tiep tren trinh duyet (Khong ton Quota API va khong phu thuoc mang ngoai)
+async function runClientSideOCR() {
+    const statusText = document.getElementById('ocr-status-text');
+    if (typeof Tesseract === 'undefined') {
+        statusText.innerText = 'Không thể kết nối máy chủ AI. Bạn hãy bấm "Kiểm tra hình ảnh" để hệ thống phân tích trực tiếp.';
+        return;
+    }
+
+    try {
+        statusText.innerText = 'Đang phân tích chữ trực tiếp từ trình duyệt của bạn...';
+        const worker = await Tesseract.createWorker('vie+eng');
+        const ret = await worker.recognize(currentSelectedFile);
+        await worker.terminate();
+
+        const rawText = (ret.data && ret.data.text) ? ret.data.text.trim() : '';
+        if (!rawText) {
+            statusText.innerText = 'Không đọc được chữ rõ ràng từ ảnh này. Bạn hãy bấm "Kiểm tra hình ảnh".';
+            return;
+        }
+
+        switchScanMode('text');
+        document.getElementById('content').value = rawText;
+        updateAutoDetectedType();
+        statusText.innerText = 'Đã trích xuất toàn bộ chữ thành công từ ảnh và chuyển sang trang kiểm tra nội dung.';
+
+        const contentEl = document.getElementById('content');
+        if (contentEl) {
+            contentEl.focus();
+            contentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    } catch (e) {
+        statusText.innerText = 'Không thể trích xuất chữ tự động. Bạn hãy bấm "Kiểm tra hình ảnh" để phân tích trực tiếp.';
+    }
+}
+
+function applyExtractedData(data) {
+    let fillText = '';
+
+    if (data.extracted_text && data.extracted_text.trim()) {
+        fillText = data.extracted_text.trim();
+    } else if (data.extracted_phone && data.extracted_phone.trim()) {
+        fillText = data.extracted_phone.trim();
+    } else if (data.extracted_url && data.extracted_url.trim()) {
+        fillText = data.extracted_url.trim();
+    }
+
+    if (fillText) {
+        switchScanMode('text');
+        const contentEl = document.getElementById('content');
+        if (contentEl) {
+            contentEl.value = fillText;
+            updateAutoDetectedType();
+            contentEl.focus();
+            contentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        document.getElementById('ocr-status-text').innerText = 'Đã trích xuất chính xác nội dung từ ảnh và chuyển sang trang kiểm tra.';
+    } else {
+        document.getElementById('ocr-status-text').innerText = 'Không phát hiện thấy văn bản hoặc số điện thoại rõ ràng trong ảnh.';
+    }
+}
+
+// Ham tu dong nhan dien the loai noi dung (SMS, SDT, Email, URL) ngay khi nguoi dung nhap
+function detectContentType(val) {
+    const text = (val || '').trim();
+    if (!text) {
+        return { type: 'text', label: 'Tin nhắn / Đoạn hội thoại' };
+    }
+
+    // 1. Thu dien tu (Email)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (emailRegex.test(text)) {
+        return { type: 'email', label: 'Thư điện tử (Email)' };
+    }
+
+    // 2. So dien thoai (chi chua so va ky tu phan cach, do dai 3-15 chu so, khong co chu cai)
+    const digitsOnly = text.replace(/[\s.\-()+]/g, '');
+    const hasLetters = /[a-zA-ZÀ-ỹ]/i.test(text);
+    if (!hasLetters && /^\d+$/.test(digitsOnly) && digitsOnly.length >= 3 && digitsOnly.length <= 15) {
+        return { type: 'phone', label: 'Số điện thoại tra cứu' };
+    }
+
+    // 3. Duong dan lien ket (URL / Website / Ten mien)
+    const urlPrefixRegex = /^(https?:\/\/|www\.)/i;
+    const domainRegex = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+(\/[^\s]*)?$/i;
+    if ((urlPrefixRegex.test(text) || domainRegex.test(text)) && !/^\d+$/.test(digitsOnly)) {
+        return { type: 'url', label: 'Đường dẫn liên kết (URL / Web)' };
+    }
+
+    // 4. Mac dinh: Tin nhan / Doan hoi thoai / Van ban tong hop
+    return { type: 'text', label: 'Tin nhắn / Đoạn hội thoại' };
+}
+
+function updateAutoDetectedType() {
+    const contentEl = document.getElementById('content');
+    const selectEl = document.getElementById('input_type');
+    const badgeEl = document.getElementById('auto-type-badge');
+    if (!contentEl || !badgeEl) return;
+
+    const res = detectContentType(contentEl.value);
+    if (selectEl) {
+        selectEl.value = res.type;
+    }
+    badgeEl.textContent = res.label;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const contentEl = document.getElementById('content');
+    if (contentEl) {
+        contentEl.addEventListener('input', updateAutoDetectedType);
+        contentEl.addEventListener('paste', function() {
+            setTimeout(updateAutoDetectedType, 50);
+        });
+        updateAutoDetectedType();
+    }
+
+    // Khoi tao che do dua theo URL (?mode=image hoac ?mode=text)
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialMode = urlParams.get('mode');
+    if (initialMode === 'image') {
+        switchScanMode('image');
+    } else if (initialMode === 'text') {
+        switchScanMode('text');
+    }
+});
+</script>
+{% endblock %}

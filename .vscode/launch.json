@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ScamSieve: chay server (uvicorn)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": ["app.main:app", "--reload"],
+            "jinja": true,
+            "justMyCode": true
+        },
+        {
+            "name": "ScamSieve: chay tat ca test",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["tests", "-v"],
+            "justMyCode": true
+        },
+        {
+            "name": "ScamSieve: danh gia detector",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "scripts.evaluate_detector",
+            "justMyCode": true
+        }
+    ]
+}
